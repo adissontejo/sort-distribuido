@@ -1,0 +1,40 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package project;
+
+option java_package = "ufrn.imd.project.grpc";
+option java_multiple_files = true;
+
+message InstanceMessage {
+  string componentKey = 1;
+  string hostname = 2;
+  int32 port = 3;
+}
+
+service HeartbeatService {
+  rpc Receive (InstanceMessage) returns (google.protobuf.Empty) {}
+}
+
+message QuicksortMessage {
+  repeated int32 data = 1;
+}
+
+message MergesortMessage {
+  repeated int32 data = 1;
+}
+
+message SortResponseMessage {
+  repeated int32 data = 1;
+}
+
+service QuicksortService {
+  rpc Sort (QuicksortMessage) returns (SortResponseMessage) {}
+}
+
+service MergesortService {
+  rpc Sort (MergesortMessage) returns (SortResponseMessage) {}
+}
+
+service GatewayService {
+  rpc Quicksort (QuicksortMessage) returns (SortResponseMessage) {}
+}

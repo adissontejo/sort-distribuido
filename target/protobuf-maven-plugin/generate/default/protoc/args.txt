@@ -1,0 +1,7 @@
+--java_out=/home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf
+--plugin=protoc-gen-a9aea3919a46188dc51e3dc4bc582caec396e1=/home/adisson/.m2/repository/io/grpc/protoc-gen-grpc-java/1.73.0/protoc-gen-grpc-java-1.73.0-linux-x86_64.exe
+--a9aea3919a46188dc51e3dc4bc582caec396e1_out=/home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf
+/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/proto/services.proto
+--proto_path=/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/proto
+--proto_path=/home/adisson/Documents/Universidade/projeto-distribuida-1/target/protobuf-maven-plugin/generate/default/archives/proto-google-common-protos-2.51.0-7a7d60ccc274bc29e4d93ab9ecd9caf73f1451
+--proto_path=/home/adisson/Documents/Universidade/projeto-distribuida-1/target/protobuf-maven-plugin/generate/default/archives/protobuf-java-4.31.1-1f30c87ad16ee7f8b187ccb13bcc4fe848c0d971

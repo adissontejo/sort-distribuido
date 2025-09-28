@@ -74,6 +74,17 @@ private static final long serialVersionUID = 0L;
   }
   private int dataMemoizedSerializedSize = -1;
 
+  public static final int TIME_FIELD_NUMBER = 2;
+  private double time_ = 0D;
+  /**
+   * <code>double time = 2;</code>
+   * @return The time.
+   */
+  @java.lang.Override
+  public double getTime() {
+    return time_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -95,6 +106,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < data_.size(); i++) {
       output.writeInt32NoTag(data_.getInt(i));
+    }
+    if (java.lang.Double.doubleToRawLongBits(time_) != 0) {
+      output.writeDouble(2, time_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -119,6 +133,10 @@ private static final long serialVersionUID = 0L;
       }
       dataMemoizedSerializedSize = dataSize;
     }
+    if (java.lang.Double.doubleToRawLongBits(time_) != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeDoubleSize(2, time_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -136,6 +154,9 @@ private static final long serialVersionUID = 0L;
 
     if (!getDataList()
         .equals(other.getDataList())) return false;
+    if (java.lang.Double.doubleToLongBits(getTime())
+        != java.lang.Double.doubleToLongBits(
+            other.getTime())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -151,6 +172,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getDataList().hashCode();
     }
+    hash = (37 * hash) + TIME_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getTime()));
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -283,6 +307,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       data_ = emptyIntList();
+      time_ = 0D;
       return this;
     }
 
@@ -320,6 +345,9 @@ private static final long serialVersionUID = 0L;
         data_.makeImmutable();
         result.data_ = data_;
       }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.time_ = time_;
+      }
     }
 
     @java.lang.Override
@@ -344,6 +372,9 @@ private static final long serialVersionUID = 0L;
           data_.addAll(other.data_);
         }
         onChanged();
+      }
+      if (java.lang.Double.doubleToRawLongBits(other.getTime()) != 0) {
+        setTime(other.getTime());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -387,6 +418,11 @@ private static final long serialVersionUID = 0L;
               input.popLimit(limit);
               break;
             } // case 10
+            case 17: {
+              time_ = input.readDouble();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 17
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -484,6 +520,38 @@ private static final long serialVersionUID = 0L;
     public Builder clearData() {
       data_ = emptyIntList();
       bitField0_ = (bitField0_ & ~0x00000001);
+      onChanged();
+      return this;
+    }
+
+    private double time_ ;
+    /**
+     * <code>double time = 2;</code>
+     * @return The time.
+     */
+    @java.lang.Override
+    public double getTime() {
+      return time_;
+    }
+    /**
+     * <code>double time = 2;</code>
+     * @param value The time to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTime(double value) {
+
+      time_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>double time = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTime() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      time_ = 0D;
       onChanged();
       return this;
     }

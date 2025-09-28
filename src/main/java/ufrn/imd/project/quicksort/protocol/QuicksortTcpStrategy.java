@@ -5,13 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import ufrn.imd.project.dtos.QuicksortRequest;
-import ufrn.imd.project.dtos.SortResponse;
 
 public class QuicksortTcpStrategy implements QuicksortProtocolStrategy {
   @Override
-  public void listen(int port, ListenCallback callback) throws IOException {
+  public void listen(int port, RequestListener listener) throws IOException {
     ServerSocket serverSocket = new ServerSocket(port);
 
     try {
@@ -30,21 +30,19 @@ public class QuicksortTcpStrategy implements QuicksortProtocolStrategy {
           continue;
         }
 
-        callback.execute(
-          new QuicksortRequest(),
-          new Reply() {
-            public void send(SortResponse response) {
-              try {
-                ObjectOutputStream outputStream = new ObjectOutputStream(connection.getOutputStream());
+        listener.execute(
+          new QuicksortRequest(new ArrayList<>()),
+          response -> {
+            try {
+              ObjectOutputStream outputStream = new ObjectOutputStream(connection.getOutputStream());
 
-                outputStream.writeObject(response);
-                outputStream.flush();
+              outputStream.writeObject(response);
+              outputStream.flush();
 
-                connection.close();
-              } catch (IOException e) {
-                System.out.println("Could not send response to gateway.");
-              }
-            };
+              connection.close();
+            } catch (IOException e) {
+              System.out.println("Could not send response to gateway.");
+            }
           }
         );
 

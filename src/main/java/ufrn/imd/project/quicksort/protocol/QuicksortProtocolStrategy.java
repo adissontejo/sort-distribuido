@@ -6,9 +6,9 @@ import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.dtos.SortResponse;
 
 public interface QuicksortProtocolStrategy {
-  void listen(int port, ListenCallback callback) throws IOException, InterruptedException;
+  void listen(int port, RequestListener listener) throws IOException, InterruptedException;
 
-  public interface ListenCallback {
+  public interface RequestListener {
     void execute(QuicksortRequest request, Reply reply);
   }
 

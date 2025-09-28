@@ -26,4 +26,10 @@ public interface SortResponseMessageOrBuilder extends
    * @return The data at the given index.
    */
   int getData(int index);
+
+  /**
+   * <code>double time = 2;</code>
+   * @return The time.
+   */
+  double getTime();
 }

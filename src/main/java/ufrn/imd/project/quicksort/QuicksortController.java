@@ -1,11 +1,16 @@
 package ufrn.imd.project.quicksort;
 
+import java.util.List;
+
+import ufrn.imd.project.dtos.SortResponse;
 import ufrn.imd.project.quicksort.protocol.QuicksortProtocolStrategy;
 
 public class QuicksortController {
+  private final QuicksortService service;
   private final QuicksortProtocolStrategy protocolStrategy;
 
-  public QuicksortController(QuicksortProtocolStrategy protocolStrategy) {
+  public QuicksortController(QuicksortService service, QuicksortProtocolStrategy protocolStrategy) {
+    this.service = service;
     this.protocolStrategy = protocolStrategy;
   }
 
@@ -15,6 +20,16 @@ public class QuicksortController {
 
       this.protocolStrategy.listen(port, (request, reply ) -> {
         System.out.println("New request received.");
+
+        List<Integer> data = request.data();
+
+        long initialTime = System.nanoTime();
+
+        service.sort(data);
+
+        long finalTime = System.nanoTime();
+
+        reply.send(new SortResponse(data, finalTime - initialTime));
       });
     } catch (Exception e) {
       throw new RuntimeException("Error while trying to listen requests: " + e.getMessage());

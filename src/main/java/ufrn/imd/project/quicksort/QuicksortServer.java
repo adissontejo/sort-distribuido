@@ -36,7 +36,8 @@ public class QuicksortServer {
 
     ComponentInstance self = new ComponentInstance("quicksort", "localhost", port);
     HeartbeatEmitter heartbeatEmitter = new HeartbeatEmitter(heartbeatProtocolStrategy, self);
-    QuicksortController controller = new QuicksortController(protocolStrategy);
+    QuicksortService service = new QuicksortService();
+    QuicksortController controller = new QuicksortController(service, protocolStrategy);
 
     heartbeatEmitter.start();
     controller.listen(port);

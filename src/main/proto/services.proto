@@ -23,8 +23,24 @@ message MergesortMessage {
   repeated int32 data = 1;
 }
 
+enum ParallelSortCriteriaGrpc {
+  FIRST = 0;
+  ALL = 1;
+}
+
+message ParallelSortMessage {
+  repeated int32 data = 1;
+  ParallelSortCriteriaGrpc criteria = 2;
+}
+
 message SortResponseMessage {
   repeated int32 data = 1;
+  double time = 2;
+}
+
+message ParallelSortResponseMessage {
+  SortResponseMessage quicksort = 1;
+  SortResponseMessage mergesort = 2;
 }
 
 service QuicksortService {
@@ -37,4 +53,6 @@ service MergesortService {
 
 service GatewayService {
   rpc Quicksort (QuicksortMessage) returns (SortResponseMessage) {}
+  rpc Mergesort (MergesortMessage) returns (SortResponseMessage) {}
+  rpc ParallelSort (ParallelSortMessage) returns (ParallelSortResponseMessage) {}
 }

@@ -42,10 +42,20 @@ public final class Services {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_project_MergesortMessage_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_project_ParallelSortMessage_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_project_ParallelSortMessage_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_project_SortResponseMessage_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_project_SortResponseMessage_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_project_ParallelSortResponseMessage_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_project_ParallelSortResponseMessage_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -59,16 +69,27 @@ public final class Services {
       "uf/empty.proto\"G\n\017InstanceMessage\022\024\n\014com" +
       "ponentKey\030\001 \001(\t\022\020\n\010hostname\030\002 \001(\t\022\014\n\004por" +
       "t\030\003 \001(\005\" \n\020QuicksortMessage\022\014\n\004data\030\001 \003(" +
-      "\005\" \n\020MergesortMessage\022\014\n\004data\030\001 \003(\005\"#\n\023S" +
-      "ortResponseMessage\022\014\n\004data\030\001 \003(\0052Q\n\020Hear" +
-      "tbeatService\022=\n\007Receive\022\030.project.Instan" +
-      "ceMessage\032\026.google.protobuf.Empty\"\0002U\n\020Q" +
-      "uicksortService\022A\n\004Sort\022\031.project.Quicks" +
-      "ortMessage\032\034.project.SortResponseMessage" +
-      "\"\0002U\n\020MergesortService\022A\n\004Sort\022\031.project" +
-      ".MergesortMessage\032\034.project.SortResponse" +
-      "Message\"\0002X\n\016GatewayService\022F\n\tQuicksort" +
-      "\022\031.project.QuicksortMessage\032\034.project.So" +
+      "\005\" \n\020MergesortMessage\022\014\n\004data\030\001 \003(\005\"X\n\023P" +
+      "arallelSortMessage\022\014\n\004data\030\001 \003(\005\0223\n\010crit" +
+      "eria\030\002 \001(\0162!.project.ParallelSortCriteri" +
+      "aGrpc\"1\n\023SortResponseMessage\022\014\n\004data\030\001 \003" +
+      "(\005\022\014\n\004time\030\002 \001(\001\"\177\n\033ParallelSortResponse" +
+      "Message\022/\n\tquicksort\030\001 \001(\0132\034.project.Sor" +
+      "tResponseMessage\022/\n\tmergesort\030\002 \001(\0132\034.pr" +
+      "oject.SortResponseMessage*.\n\030ParallelSor" +
+      "tCriteriaGrpc\022\t\n\005FIRST\020\000\022\007\n\003ALL\020\0012Q\n\020Hea" +
+      "rtbeatService\022=\n\007Receive\022\030.project.Insta" +
+      "nceMessage\032\026.google.protobuf.Empty\"\0002U\n\020" +
+      "QuicksortService\022A\n\004Sort\022\031.project.Quick" +
+      "sortMessage\032\034.project.SortResponseMessag" +
+      "e\"\0002U\n\020MergesortService\022A\n\004Sort\022\031.projec" +
+      "t.MergesortMessage\032\034.project.SortRespons" +
+      "eMessage\"\0002\366\001\n\016GatewayService\022F\n\tQuickso" +
+      "rt\022\031.project.QuicksortMessage\032\034.project." +
+      "SortResponseMessage\"\000\022F\n\tMergesort\022\031.pro" +
+      "ject.MergesortMessage\032\034.project.SortResp" +
+      "onseMessage\"\000\022T\n\014ParallelSort\022\034.project." +
+      "ParallelSortMessage\032$.project.ParallelSo" +
       "rtResponseMessage\"\000B\031\n\025ufrn.imd.project." +
       "grpcP\001b\006proto3"
     };
@@ -95,12 +116,24 @@ public final class Services {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_project_MergesortMessage_descriptor,
         new java.lang.String[] { "Data", });
-    internal_static_project_SortResponseMessage_descriptor =
+    internal_static_project_ParallelSortMessage_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_project_ParallelSortMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_project_ParallelSortMessage_descriptor,
+        new java.lang.String[] { "Data", "Criteria", });
+    internal_static_project_SortResponseMessage_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_project_SortResponseMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_project_SortResponseMessage_descriptor,
-        new java.lang.String[] { "Data", });
+        new java.lang.String[] { "Data", "Time", });
+    internal_static_project_ParallelSortResponseMessage_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_project_ParallelSortResponseMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_project_ParallelSortResponseMessage_descriptor,
+        new java.lang.String[] { "Quicksort", "Mergesort", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.EmptyProto.getDescriptor();
   }

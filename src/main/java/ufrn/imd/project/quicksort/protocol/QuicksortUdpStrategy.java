@@ -3,13 +3,13 @@ package ufrn.imd.project.quicksort.protocol;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 
 import ufrn.imd.project.dtos.QuicksortRequest;
-import ufrn.imd.project.dtos.SortResponse;
 
 public class QuicksortUdpStrategy implements QuicksortProtocolStrategy {
   @Override
-  public void listen(int port, ListenCallback callback) throws IOException {
+  public void listen(int port, RequestListener listener) throws IOException {
     DatagramSocket socket = new DatagramSocket(port);
 
     try {
@@ -22,11 +22,10 @@ public class QuicksortUdpStrategy implements QuicksortProtocolStrategy {
 
         String message = new String(receivePacket.getData()).trim();
 
-        callback.execute(
-          new QuicksortRequest(),
-          new Reply() {
-            public void send(SortResponse response) {
-            };
+        listener.execute(
+          new QuicksortRequest(new ArrayList<>()),
+          response -> {
+
           }
         );
       }

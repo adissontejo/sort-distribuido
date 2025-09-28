@@ -1,7 +1,5 @@
 package ufrn.imd.project.gateway;
 
-import javax.sound.sampled.Port;
-
 import ufrn.imd.project.config.ConfigLoader;
 import ufrn.imd.project.config.PortManager;
 import ufrn.imd.project.config.Protocol;

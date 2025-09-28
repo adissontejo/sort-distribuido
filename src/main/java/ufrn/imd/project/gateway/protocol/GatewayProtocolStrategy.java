@@ -3,13 +3,24 @@ package ufrn.imd.project.gateway.protocol;
 import java.io.IOException;
 
 import ufrn.imd.project.dtos.ComponentInstance;
+import ufrn.imd.project.dtos.MergesortRequest;
+import ufrn.imd.project.dtos.ParallelSortRequest;
+import ufrn.imd.project.dtos.ParallelSortResponse;
 import ufrn.imd.project.dtos.QuicksortRequest;
+import ufrn.imd.project.dtos.SortResponse;
 
 public interface GatewayProtocolStrategy {
-  public void listen(int port, ListenCallback callback) throws IOException, InterruptedException;
-  public void sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
+  public void listen(int port, Router router) throws IOException, InterruptedException;
+  public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
+  public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request);
 
-  public interface ListenCallback {
-    void execute();
+  public interface Router {
+    void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply);
+    void onMergesortRequest(MergesortRequest request, Reply<SortResponse> reply);
+    void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply);
+  }
+
+  public interface Reply<T> {
+    public void send(T response);
   }
 }

@@ -1,7 +1,5 @@
 package ufrn.imd.project.gateway.protocol;
 
-import java.io.IOException;
-
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortRequest;
@@ -10,9 +8,9 @@ import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.dtos.SortResponse;
 
 public interface GatewayProtocolStrategy {
-  public void listen(int port, Router router) throws IOException, InterruptedException;
-  public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request) throws IOException;
-  public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request) throws IOException;
+  public void listen(int port, Router router);
+  public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
+  public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request);
 
   public interface Router {
     void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply);

@@ -1,6 +1,5 @@
 package ufrn.imd.project.gateway;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -65,27 +64,27 @@ public class GatewayController {
   }
 
   private void quicksort(QuicksortRequest request, Reply<SortResponse> reply) {
-    try {
-      ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
+    ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
 
-      SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
-
-      reply.send(response);
-    } catch (IOException e) {
-      throw new RuntimeException("Could not send to quicksort");
+    if (instance == null) {
+      throw new RuntimeException("No quicksort instance found");
     }
+
+    SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
+
+    reply.send(response);
   }
 
   private void mergesort(MergesortRequest request, Reply<SortResponse> reply) {
-    try {
-      ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
+    ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
 
-      SortResponse response = protocolStrategy.sendToMergesort(instance, request);
-
-      reply.send(response);
-    } catch (IOException e) {
-      throw new RuntimeException("Could not send to mergesort");
+    if (instance == null) {
+      throw new RuntimeException("No mergesort instance found");
     }
+
+    SortResponse response = protocolStrategy.sendToMergesort(instance, request);
+
+    reply.send(response);
   }
 
   private void parallelSort(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
@@ -100,8 +99,7 @@ public class GatewayController {
 
         @Override
         public void onError() {
-          // TODO Auto-generated method stub
-
+          throw new RuntimeException("Could not send parallel sort");
         }
       }
     );
@@ -113,17 +111,25 @@ public class GatewayController {
     executorService.submit(() -> {
       requestWaitingList.add("quicksort", quorumCallback);
 
-      quicksort(new QuicksortRequest(request.data()), (response) -> {
-        requestWaitingList.handleResponse("quicksort", response);
-      });
+      try {
+        quicksort(new QuicksortRequest(request.data()), (response) -> {
+          requestWaitingList.handleResponse("quicksort", response);
+        });
+      } catch (Throwable e) {
+        requestWaitingList.handleError("quicksort", e);
+      }
     });
 
     executorService.submit(() -> {
       requestWaitingList.add("mergesort", quorumCallback);
 
-      mergesort(new MergesortRequest(request.data()), (response) -> {
-        requestWaitingList.handleResponse("mergesort", response);
-      });
+      try {
+        mergesort(new MergesortRequest(request.data()), (response) -> {
+          requestWaitingList.handleResponse("mergesort", response);
+        });
+      } catch (Throwable e) {
+        requestWaitingList.handleError("quicksort", e);
+      }
     });
   }
 }

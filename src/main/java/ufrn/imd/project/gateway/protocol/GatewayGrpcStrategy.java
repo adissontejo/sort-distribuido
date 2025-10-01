@@ -27,11 +27,17 @@ import ufrn.imd.project.grpc.QuicksortServiceGrpc.QuicksortServiceBlockingStub;
 
 public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
   @Override
-  public void listen(int port, Router router) throws IOException, InterruptedException {
-    Server server = ServerBuilder.forPort(port).addService(new GatewayServiceImpl(router)).build();
+  public void listen(int port, Router router) {
+    try {
+      Server server = ServerBuilder.forPort(port).addService(new GatewayServiceImpl(router)).build();
 
-    server.start();
-    server.awaitTermination();
+      server.start();
+      server.awaitTermination();
+    } catch (IOException e) {
+      throw new RuntimeException("Could not listen to grpc requests");
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Could not listen to grpc requests");
+    }
   }
 
   @Override
@@ -85,34 +91,50 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
     @Override
     public void quicksort(QuicksortMessage request, StreamObserver<SortResponseMessage> responseObserver) {
-      router.onQuicksortRequest(
-        new QuicksortRequest(request.getDataList()),
-        response -> {
-          responseObserver.onNext(
-            SortResponseMessage.newBuilder()
-              .addAllData(response.data())
-              .setNanoseconds(response.nanoseconds())
-              .build()
+      if (request.getDataList() == null) {
+        responseObserver.onError(new RuntimeException("data is required"));
+      } else {
+        try {
+          router.onQuicksortRequest(
+            new QuicksortRequest(request.getDataList()),
+            response -> {
+              responseObserver.onNext(
+                SortResponseMessage.newBuilder()
+                  .addAllData(response.data())
+                  .setNanoseconds(response.nanoseconds())
+                  .build()
+              );
+              responseObserver.onCompleted();
+            }
           );
-          responseObserver.onCompleted();
+        } catch (Throwable e) {
+          responseObserver.onError(new RuntimeException("Internal server error"));
         }
-      );
+      }
     }
 
     @Override
     public void mergesort(MergesortMessage request, StreamObserver<SortResponseMessage> responseObserver) {
-      router.onMergesortRequest(
-        new MergesortRequest(request.getDataList()),
-        response -> {
-          responseObserver.onNext(
-            SortResponseMessage.newBuilder()
-              .addAllData(response.data())
-              .setNanoseconds(response.nanoseconds())
-              .build()
+      if (request.getDataList() == null) {
+        responseObserver.onError(new RuntimeException("data is required"));
+      } else {
+        try {
+          router.onMergesortRequest(
+            new MergesortRequest(request.getDataList()),
+            response -> {
+              responseObserver.onNext(
+                SortResponseMessage.newBuilder()
+                  .addAllData(response.data())
+                  .setNanoseconds(response.nanoseconds())
+                  .build()
+              );
+              responseObserver.onCompleted();
+            }
           );
-          responseObserver.onCompleted();
+        } catch (Throwable e) {
+          responseObserver.onError(new RuntimeException("Internal server error"));
         }
-      );
+      }
     }
 
     @Override
@@ -121,31 +143,39 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
         ? ParallelSortCriteria.FIRST
         : ParallelSortCriteria.ALL;
 
-      router.onParallelSortRequest(
-        new ParallelSortRequest(request.getDataList(), criteria),
-        response -> {
-          var builder = ParallelSortResponseMessage.newBuilder();
+      if (request.getDataList() == null) {
+        responseObserver.onError(new RuntimeException("data is required"));
+      } else {
+        try {
+          router.onParallelSortRequest(
+            new ParallelSortRequest(request.getDataList(), criteria),
+            response -> {
+              var builder = ParallelSortResponseMessage.newBuilder();
 
-          if (response.quicksort() != null) {
-            builder.setQuicksort(
-              SortResponseMessage.newBuilder()
-                .addAllData(response.quicksort().data())
-                .setNanoseconds(response.quicksort().nanoseconds())
-            );
-          }
+              if (response.quicksort() != null) {
+                builder.setQuicksort(
+                  SortResponseMessage.newBuilder()
+                    .addAllData(response.quicksort().data())
+                    .setNanoseconds(response.quicksort().nanoseconds())
+                );
+              }
 
-          if (response.mergesort() != null) {
-            builder.setMergesort(
-              SortResponseMessage.newBuilder()
-                .addAllData(response.mergesort().data())
-                .setNanoseconds(response.mergesort().nanoseconds())
-            );
-          }
+              if (response.mergesort() != null) {
+                builder.setMergesort(
+                  SortResponseMessage.newBuilder()
+                    .addAllData(response.mergesort().data())
+                    .setNanoseconds(response.mergesort().nanoseconds())
+                );
+              }
 
-          responseObserver.onNext(builder.build());
-          responseObserver.onCompleted();
+              responseObserver.onNext(builder.build());
+              responseObserver.onCompleted();
+            }
+          );
+        } catch (Throwable e) {
+          responseObserver.onError(new RuntimeException("Internal server error"));
         }
-      );
+      }
     }
   }
 }

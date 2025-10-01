@@ -27,7 +27,9 @@ public class UdpClient {
 
       try {
         message += writer.writeValueAsString(data);
-      } catch (JsonProcessingException e) {}
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException("Invalid json object to send");
+      }
     }
 
     try {
@@ -42,6 +44,8 @@ public class UdpClient {
       socket.send(sendPacket);
     } catch (IOException e) {
       e.printStackTrace();
+
+      throw new RuntimeException("Could not send udp request");
     }
   }
 
@@ -72,7 +76,7 @@ public class UdpClient {
       try {
         statusCode = Integer.parseInt(startLineElements[0]);
       } catch (NumberFormatException e) {
-        return null;
+        throw new RuntimeException("Invalid udp response");
       }
 
       String body = null;
@@ -89,7 +93,7 @@ public class UdpClient {
     } catch (IOException e) {
       e.printStackTrace();
 
-      return null;
+      throw new RuntimeException("Could not receive udp response");
     }
   }
 

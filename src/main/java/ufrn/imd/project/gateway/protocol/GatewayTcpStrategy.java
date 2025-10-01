@@ -15,14 +15,36 @@ public class GatewayTcpStrategy implements GatewayProtocolStrategy {
     TcpHttpServer server = new TcpHttpServer(port);
 
     server.listen((request) -> {
-      if (request.method.equals("POST")) {
-        if (request.path.equals("/quicksort")) {
-          router.onQuicksortRequest(request.body(QuicksortRequest.class), request::reply);
-        } else if (request.path.equals("/mergesort")) {
-          router.onMergesortRequest(request.body(MergesortRequest.class), request::reply);
-        } else if (request.path.equals("/parallel-sort")) {
-          router.onParallelSortRequest(request.body(ParallelSortRequest.class), request::reply);
+      try {
+        if (request.method.equals("POST")) {
+          if (request.path.equals("/quicksort")) {
+            QuicksortRequest body = request.body(QuicksortRequest.class);
+
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onQuicksortRequest(body, request::reply);
+            }
+          } else if (request.path.equals("/mergesort")) {
+            MergesortRequest body = request.body(MergesortRequest.class);
+
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onMergesortRequest(body, request::reply);
+            }
+          } else if (request.path.equals("/parallel-sort")) {
+            ParallelSortRequest body = request.body(ParallelSortRequest.class);
+
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onParallelSortRequest(request.body(ParallelSortRequest.class), request::reply);
+            }
+          }
         }
+      } catch (Throwable e) {
+        request.error("Internal server error");
       }
     });
   }

@@ -14,11 +14,17 @@ import ufrn.imd.project.grpc.MergesortServiceGrpc.MergesortServiceImplBase;
 
 public class MergesortGrpcStrategy implements MergesortProtocolStrategy {
   @Override
-  public void listen(int port, RequestListener listener) throws IOException, InterruptedException {
-    Server server = ServerBuilder.forPort(port).addService(new MergesortServiceImpl(listener)).build();
+  public void listen(int port, RequestListener listener) {
+    try {
+      Server server = ServerBuilder.forPort(port).addService(new MergesortServiceImpl(listener)).build();
 
-    server.start();
-    server.awaitTermination();
+      server.start();
+      server.awaitTermination();
+    } catch (IOException e) {
+      throw new RuntimeException("Could not listen to grpc requests");
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Could not listen to grpc requests");
+    }
   }
 
   private class MergesortServiceImpl extends MergesortServiceImplBase {

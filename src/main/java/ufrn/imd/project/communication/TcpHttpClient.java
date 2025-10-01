@@ -36,7 +36,11 @@ public class TcpHttpClient {
 
         try {
           requestBody = writer.writeValueAsString(data);
-        } catch (JsonProcessingException e) {}
+        } catch (JsonProcessingException e) {
+          connection.close();
+
+          throw new RuntimeException("Invalid json data to send");
+        }
       }
 
       if (requestBody != null) {
@@ -68,7 +72,7 @@ public class TcpHttpClient {
       if (startLineElements.length < 3) {
         connection.close();
 
-        return null;
+        throw new RuntimeException("Invalid http response received");
       }
 
       String version = startLineElements[0];
@@ -80,13 +84,13 @@ public class TcpHttpClient {
       } catch (NumberFormatException e) {
         connection.close();
 
-        return null;
+        throw new RuntimeException("Invalid http response received");
       }
 
       if (statusCode < 200 || statusCode >= 300) {
         connection.close();
 
-        return null;
+        throw new RuntimeException("Error http response received");
       }
 
       Map<String, String> responseHeaders = new HashMap<>();
@@ -126,7 +130,7 @@ public class TcpHttpClient {
     } catch (IOException e) {
       e.printStackTrace();
 
-      return null;
+      throw new RuntimeException("Could not send tcp/http request");
     }
   }
 

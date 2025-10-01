@@ -15,24 +15,20 @@ public class QuicksortController {
   }
 
   public void listen(int port) {
-    try {
-      System.out.println("Starting to listen to requests on port " + port + "...");
+    System.out.println("Starting to listen to requests on port " + port + "...");
 
-      this.protocolStrategy.listen(port, (request, reply ) -> {
-        System.out.println("New request received.");
+    this.protocolStrategy.listen(port, (request, reply ) -> {
+      System.out.println("New request received.");
 
-        List<Integer> data = request.data();
+      List<Integer> data = request.data();
 
-        long initialTime = System.nanoTime();
+      long initialTime = System.nanoTime();
 
-        service.sort(data);
+      service.sort(data);
 
-        long finalTime = System.nanoTime();
+      long finalTime = System.nanoTime();
 
-        reply.send(new SortResponse(data, finalTime - initialTime));
-      });
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+      reply.send(new SortResponse(data, finalTime - initialTime));
+    });
   }
 }

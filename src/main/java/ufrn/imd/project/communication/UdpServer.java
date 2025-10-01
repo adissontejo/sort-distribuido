@@ -104,7 +104,9 @@ public class UdpServer {
 
         try {
           message += writer.writeValueAsString(data);
-        } catch (JsonProcessingException e) {}
+        } catch (JsonProcessingException e) {
+          throw new RuntimeException("Invalid json object to reply");
+        }
       }
 
       DatagramPacket sendPacket = new DatagramPacket(message.getBytes(), message.length(), address, port);
@@ -113,7 +115,29 @@ public class UdpServer {
         socket.send(sendPacket);
       } catch (IOException e) {
         e.printStackTrace();
+
+        throw new RuntimeException("Could not send reply");
       }
+    }
+
+    public void error(String message, boolean isClientError) {
+      String response =
+        (isClientError ? "400 Bad Request" : "500 Internal Server Error") + "\n"
+        + message;
+
+      DatagramPacket sendPacket = new DatagramPacket(response.getBytes(), response.length(), address, port);
+
+      try {
+        socket.send(sendPacket);
+      } catch (IOException e) {
+        e.printStackTrace();
+
+        throw new RuntimeException("Could not send reply");
+      }
+    }
+
+    public void error(String message) {
+      error(message, true);
     }
   }
 }

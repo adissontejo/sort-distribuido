@@ -85,6 +85,8 @@ public class TcpHttpServer {
       }
     } catch (IOException e) {
       e.printStackTrace();
+
+      throw new RuntimeException("Could not listen to tcp/http requests");
     }
   }
 
@@ -126,34 +128,36 @@ public class TcpHttpServer {
     }
 
     public void reply(Map<String, String> headers, Object data) {
-      String response = "HTTP/1.1 200 OK\n";
-
-      String body = null;
-
-      if (data != null){
-        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
-        try {
-          body = writer.writeValueAsString(data);
-        } catch (JsonProcessingException e) {}
-      }
-
-      if (body != null) {
-        headers.put("Content-Length", Integer.toString(body.length()));
-        headers.put("Content-Type", "application/json");
-      }
-
-      for (Map.Entry<String, String> entry : headers.entrySet()) {
-        response += entry.getKey() + ": " + entry.getValue() + "\n";
-      }
-
-      response += "\n";
-
-      if (body != null) {
-        response += body;
-      }
-
       try {
+        String response = "HTTP/1.1 200 OK\n";
+
+        String body = null;
+
+        if (data != null){
+          ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+          try {
+            body = writer.writeValueAsString(data);
+          } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid json object to reply");
+          }
+        }
+
+        if (body != null) {
+          headers.put("Content-Length", Integer.toString(body.length()));
+          headers.put("Content-Type", "application/json");
+        }
+
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+          response += entry.getKey() + ": " + entry.getValue() + "\n";
+        }
+
+        response += "\n";
+
+        if (body != null) {
+          response += body;
+        }
+
         BufferedWriter output = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
 
         output.write(response, 0, response.length());
@@ -162,11 +166,39 @@ public class TcpHttpServer {
         connection.close();
       } catch (IOException e) {
         e.printStackTrace();
+
+        throw new RuntimeException("Could not send reply");
       }
     }
 
     public void reply(Object data) {
       reply(new HashMap<>(), data);
+    }
+
+    public void error(String message, boolean isClientError) {
+      try {
+        String response =
+          "HTTP/1.1 " + (isClientError ? 400 : 500) + " OK\n"
+          + "Content-Length: " + message.length() + "\n"
+          + "Content-Type: text/plain\n"
+          + "\n"
+          + message;
+
+        BufferedWriter output = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+
+        output.write(response, 0, response.length());
+        output.flush();
+
+        connection.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+
+        throw new RuntimeException("Could not send reply");
+      }
+    }
+
+    public void error(String message) {
+      error(message, true);
     }
   }
 }

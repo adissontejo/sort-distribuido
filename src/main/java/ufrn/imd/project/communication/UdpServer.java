@@ -30,11 +30,11 @@ public class UdpServer {
 
           String message = new String(receivePacket.getData()).trim();
 
-          String[] lines = message.split("\n");
+          String[] lines = message.split("\r?\n");
 
           String startLine = lines[0];
 
-          String[] startLineElements = startLine.split(" ");
+          String[] startLineElements = startLine.split(" +");
 
           if (startLineElements.length < 2) {
             continue;

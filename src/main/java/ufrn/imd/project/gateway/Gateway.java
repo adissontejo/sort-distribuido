@@ -6,6 +6,7 @@ import ufrn.imd.project.config.Protocol;
 import ufrn.imd.project.gateway.protocol.GatewayGrpcStrategy;
 import ufrn.imd.project.gateway.protocol.GatewayProtocolStrategy;
 import ufrn.imd.project.gateway.protocol.GatewayTcpStrategy;
+import ufrn.imd.project.gateway.protocol.GatewayUdpStrategy;
 import ufrn.imd.project.hearbeat.HeartbeatListener;
 import ufrn.imd.project.hearbeat.LoadBalancer;
 import ufrn.imd.project.hearbeat.protocol.HeartbeatGrpcStrategy;
@@ -22,7 +23,7 @@ public class Gateway {
 
     if (protocol == Protocol.UDP) {
       heartbeatProtocolStrategy = new HeartbeatUdpStrategy();
-      protocolStrategy = new GatewayGrpcStrategy();
+      protocolStrategy = new GatewayUdpStrategy();
     } else if (protocol == Protocol.TCP) {
       heartbeatProtocolStrategy = new HeartbeatTcpStrategy();
       protocolStrategy = new GatewayTcpStrategy();

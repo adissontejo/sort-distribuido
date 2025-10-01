@@ -61,7 +61,7 @@ public class UdpClient {
 
       String message = new String(receivePacket.getData()).trim();
 
-      String[] lines = message.split(" ");
+      String[] lines = message.split("\r?\n");
 
       String startLine = lines[0];
 

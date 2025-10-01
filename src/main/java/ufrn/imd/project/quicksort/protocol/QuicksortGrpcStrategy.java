@@ -38,7 +38,7 @@ public class QuicksortGrpcStrategy implements QuicksortProtocolStrategy {
           responseObserver.onNext(
             SortResponseMessage.newBuilder()
               .addAllData(response.data())
-              .setTime(response.time())
+              .setNanoseconds(response.nanoseconds())
               .build()
           );
           responseObserver.onCompleted();

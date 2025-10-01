@@ -52,7 +52,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
     channel.shutdown();
 
-    return new SortResponse(response.getDataList(), response.getTime());
+    return new SortResponse(response.getDataList(), response.getNanoseconds());
   }
 
   @Override
@@ -73,7 +73,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
     channel.shutdown();
 
-    return new SortResponse(response.getDataList(), response.getTime());
+    return new SortResponse(response.getDataList(), response.getNanoseconds());
   }
 
   private class GatewayServiceImpl extends GatewayServiceImplBase {
@@ -91,7 +91,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
           responseObserver.onNext(
             SortResponseMessage.newBuilder()
               .addAllData(response.data())
-              .setTime(response.time())
+              .setNanoseconds(response.nanoseconds())
               .build()
           );
           responseObserver.onCompleted();
@@ -107,7 +107,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
           responseObserver.onNext(
             SortResponseMessage.newBuilder()
               .addAllData(response.data())
-              .setTime(response.time())
+              .setNanoseconds(response.nanoseconds())
               .build()
           );
           responseObserver.onCompleted();
@@ -130,7 +130,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
             builder.setQuicksort(
               SortResponseMessage.newBuilder()
                 .addAllData(response.quicksort().data())
-                .setTime(response.quicksort().time())
+                .setNanoseconds(response.quicksort().nanoseconds())
             );
           }
 
@@ -138,7 +138,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
             builder.setMergesort(
               SortResponseMessage.newBuilder()
                 .addAllData(response.mergesort().data())
-                .setTime(response.mergesort().time())
+                .setNanoseconds(response.mergesort().nanoseconds())
             );
           }
 

@@ -77,6 +77,6 @@
       "file:///home/adisson/Documents/Universidade/projeto-distribuida-1/target/protobuf-maven-plugin/generate/default/archives/proto-google-common-protos-2.51.0-7a7d60ccc274bc29e4d93ab9ecd9caf73f1451/google/shopping/type/types.proto": "d026d35f9d5848126ee2192f16c4e3cc1c21ca66d33010a9bfe67558b8609da2e14a2cdf92515b4c7790db17f9069fb2b5351aea769648e7b73e5a108e",
       "file:///home/adisson/Documents/Universidade/projeto-distribuida-1/target/protobuf-maven-plugin/generate/default/archives/protobuf-java-4.31.1-1f30c87ad16ee7f8b187ccb13bcc4fe848c0d971/google/protobuf/any.proto": "32cd7819889f601e4aca47eafa372ab2ace6ff2fc7f87be345944c94518660b3e077c8de5e7ddde9c4c12e8e873f17c8607f4d2a155d56fb18a4dbeb846d58"
     },
-    "proto_sources": {"file:///home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/proto/services.proto": "79af5eba41ead864f7838ebd020ebaafb7812d165df767bfa35d7166ed5a38e8cd98ddb3c3d74815111a8575755c752c8a1e0a0c1c22885863ea743a40"},
+    "proto_sources": {"file:///home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/proto/services.proto": "6dd1d52ad3ae927e663b4f12dfc7e6951121e1d81641b5fcd03d55b2aa2a393fdaa536dde15069fe6a69a8e46c5a7f3de66fbd293b6ea7626310d515a"},
     "descriptor_files": {}
   }

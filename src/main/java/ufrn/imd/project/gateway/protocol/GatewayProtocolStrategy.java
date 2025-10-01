@@ -11,8 +11,8 @@ import ufrn.imd.project.dtos.SortResponse;
 
 public interface GatewayProtocolStrategy {
   public void listen(int port, Router router) throws IOException, InterruptedException;
-  public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
-  public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request);
+  public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request) throws IOException;
+  public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request) throws IOException;
 
   public interface Router {
     void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply);

@@ -1,5 +1,6 @@
 package ufrn.imd.project.gateway;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
+import ufrn.imd.project.dtos.ParallelSortCriteria;
 import ufrn.imd.project.dtos.ParallelSortRequest;
 import ufrn.imd.project.dtos.ParallelSortResponse;
 import ufrn.imd.project.dtos.QuicksortRequest;
@@ -63,24 +65,32 @@ public class GatewayController {
   }
 
   private void quicksort(QuicksortRequest request, Reply<SortResponse> reply) {
-    ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
+    try {
+      ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
 
-    SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
+      SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
 
-    reply.send(response);
+      reply.send(response);
+    } catch (IOException e) {
+      throw new RuntimeException("Could not send to quicksort");
+    }
   }
 
   private void mergesort(MergesortRequest request, Reply<SortResponse> reply) {
-    ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
+    try {
+      ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
 
-    SortResponse response = protocolStrategy.sendToMergesort(instance, request);
+      SortResponse response = protocolStrategy.sendToMergesort(instance, request);
 
-    reply.send(response);
+      reply.send(response);
+    } catch (IOException e) {
+      throw new RuntimeException("Could not send to mergesort");
+    }
   }
 
   private void parallelSort(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
     QuorumCallback quorumCallback = new QuorumCallback(
-      request.criteria(),
+      request.criteria() == null ? ParallelSortCriteria.FIRST : request.criteria(),
       2,
       new QuorumConclusionListener() {
         @Override

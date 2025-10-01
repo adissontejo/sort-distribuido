@@ -28,8 +28,8 @@ public interface SortResponseMessageOrBuilder extends
   int getData(int index);
 
   /**
-   * <code>double time = 2;</code>
-   * @return The time.
+   * <code>int64 nanoseconds = 2;</code>
+   * @return The nanoseconds.
    */
-  double getTime();
+  long getNanoseconds();
 }

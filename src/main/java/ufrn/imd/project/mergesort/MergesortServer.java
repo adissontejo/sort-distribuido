@@ -11,6 +11,7 @@ import ufrn.imd.project.hearbeat.protocol.HeartbeatTcpStrategy;
 import ufrn.imd.project.hearbeat.protocol.HeartbeatUdpStrategy;
 import ufrn.imd.project.mergesort.protocol.MergesortGrpcStrategy;
 import ufrn.imd.project.mergesort.protocol.MergesortProtocolStrategy;
+import ufrn.imd.project.mergesort.protocol.MergesortTcpStrategy;
 
 public class MergesortServer {
   public static void main(String[] args) {
@@ -24,7 +25,7 @@ public class MergesortServer {
       protocolStrategy = new MergesortGrpcStrategy();
     } else if (protocol == Protocol.TCP) {
       heartbeatProtocolStrategy = new HeartbeatTcpStrategy();
-      protocolStrategy = new MergesortGrpcStrategy();
+      protocolStrategy = new MergesortTcpStrategy();
     } else {
       heartbeatProtocolStrategy = new HeartbeatGrpcStrategy();
       protocolStrategy = new MergesortGrpcStrategy();

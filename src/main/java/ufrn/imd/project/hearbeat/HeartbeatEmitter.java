@@ -30,6 +30,8 @@ public class HeartbeatEmitter {
       this.protocolStrategy.emit("localhost", PortManager.heartbeatListenerPort, self);
     } catch (Throwable e) {
       System.out.println("Could not send heartbeat message to gateway.");
+
+      e.printStackTrace();
     }
   }
 }

@@ -35,7 +35,7 @@ message ParallelSortMessage {
 
 message SortResponseMessage {
   repeated int32 data = 1;
-  double time = 2;
+  int64 nanoseconds = 2;
 }
 
 message ParallelSortResponseMessage {

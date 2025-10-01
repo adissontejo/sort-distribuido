@@ -74,15 +74,15 @@ private static final long serialVersionUID = 0L;
   }
   private int dataMemoizedSerializedSize = -1;
 
-  public static final int TIME_FIELD_NUMBER = 2;
-  private double time_ = 0D;
+  public static final int NANOSECONDS_FIELD_NUMBER = 2;
+  private long nanoseconds_ = 0L;
   /**
-   * <code>double time = 2;</code>
-   * @return The time.
+   * <code>int64 nanoseconds = 2;</code>
+   * @return The nanoseconds.
    */
   @java.lang.Override
-  public double getTime() {
-    return time_;
+  public long getNanoseconds() {
+    return nanoseconds_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -107,8 +107,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < data_.size(); i++) {
       output.writeInt32NoTag(data_.getInt(i));
     }
-    if (java.lang.Double.doubleToRawLongBits(time_) != 0) {
-      output.writeDouble(2, time_);
+    if (nanoseconds_ != 0L) {
+      output.writeInt64(2, nanoseconds_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -133,9 +133,9 @@ private static final long serialVersionUID = 0L;
       }
       dataMemoizedSerializedSize = dataSize;
     }
-    if (java.lang.Double.doubleToRawLongBits(time_) != 0) {
+    if (nanoseconds_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeDoubleSize(2, time_);
+        .computeInt64Size(2, nanoseconds_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -154,9 +154,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getDataList()
         .equals(other.getDataList())) return false;
-    if (java.lang.Double.doubleToLongBits(getTime())
-        != java.lang.Double.doubleToLongBits(
-            other.getTime())) return false;
+    if (getNanoseconds()
+        != other.getNanoseconds()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -172,9 +171,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getDataList().hashCode();
     }
-    hash = (37 * hash) + TIME_FIELD_NUMBER;
+    hash = (37 * hash) + NANOSECONDS_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        java.lang.Double.doubleToLongBits(getTime()));
+        getNanoseconds());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -307,7 +306,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       data_ = emptyIntList();
-      time_ = 0D;
+      nanoseconds_ = 0L;
       return this;
     }
 
@@ -346,7 +345,7 @@ private static final long serialVersionUID = 0L;
         result.data_ = data_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.time_ = time_;
+        result.nanoseconds_ = nanoseconds_;
       }
     }
 
@@ -373,8 +372,8 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       }
-      if (java.lang.Double.doubleToRawLongBits(other.getTime()) != 0) {
-        setTime(other.getTime());
+      if (other.getNanoseconds() != 0L) {
+        setNanoseconds(other.getNanoseconds());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -418,11 +417,11 @@ private static final long serialVersionUID = 0L;
               input.popLimit(limit);
               break;
             } // case 10
-            case 17: {
-              time_ = input.readDouble();
+            case 16: {
+              nanoseconds_ = input.readInt64();
               bitField0_ |= 0x00000002;
               break;
-            } // case 17
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -524,34 +523,34 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private double time_ ;
+    private long nanoseconds_ ;
     /**
-     * <code>double time = 2;</code>
-     * @return The time.
+     * <code>int64 nanoseconds = 2;</code>
+     * @return The nanoseconds.
      */
     @java.lang.Override
-    public double getTime() {
-      return time_;
+    public long getNanoseconds() {
+      return nanoseconds_;
     }
     /**
-     * <code>double time = 2;</code>
-     * @param value The time to set.
+     * <code>int64 nanoseconds = 2;</code>
+     * @param value The nanoseconds to set.
      * @return This builder for chaining.
      */
-    public Builder setTime(double value) {
+    public Builder setNanoseconds(long value) {
 
-      time_ = value;
+      nanoseconds_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>double time = 2;</code>
+     * <code>int64 nanoseconds = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTime() {
+    public Builder clearNanoseconds() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      time_ = 0D;
+      nanoseconds_ = 0L;
       onChanged();
       return this;
     }

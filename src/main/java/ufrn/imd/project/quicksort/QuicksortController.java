@@ -32,7 +32,7 @@ public class QuicksortController {
         reply.send(new SortResponse(data, finalTime - initialTime));
       });
     } catch (Exception e) {
-      throw new RuntimeException("Error while trying to listen requests: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 }

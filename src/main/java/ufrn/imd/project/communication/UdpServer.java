@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.ExecutorService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
-import ufrn.imd.project.config.ServerThreadPool;
 
 public class UdpServer {
   private final int port;
@@ -49,10 +48,9 @@ public class UdpServer {
     );
   }
 
-  public void listen(RequestListener listener) {
+  public void listen(RequestListener listener, ExecutorService executor) {
     try {
       DatagramSocket socket = new DatagramSocket(port);
-      ServerThreadPool pool = new ServerThreadPool();
 
       while (true) {
         try {
@@ -62,7 +60,7 @@ public class UdpServer {
 
           socket.receive(receivePacket);
 
-          pool.submit(() -> processRequest(socket, receivePacket, listener));
+          executor.submit(() -> processRequest(socket, receivePacket, listener));
         } catch (IOException e) {
           e.printStackTrace();
         }

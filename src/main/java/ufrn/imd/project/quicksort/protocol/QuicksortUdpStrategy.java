@@ -1,15 +1,22 @@
 package ufrn.imd.project.quicksort.protocol;
 
+import java.util.concurrent.ExecutorService;
+
 import ufrn.imd.project.communication.UdpServer;
 import ufrn.imd.project.dtos.QuicksortRequest;
 
 public class QuicksortUdpStrategy implements QuicksortProtocolStrategy {
   @Override
-  public void listen(int port, RequestListener listener) {
+  public void listen(int port, RequestListener listener, ExecutorService executor) {
     UdpServer server = new UdpServer(port);
 
-    server.listen((request) -> {
-      listener.execute(request.body(QuicksortRequest.class), request::reply);
-    });
+    server.listen(
+      (request) -> {
+        if (request.method.equals("POST") && request.path.equals("/sort")) {
+          listener.execute(request.body(QuicksortRequest.class), request::reply);
+        }
+      },
+      executor
+    );
   }
 }

@@ -3,10 +3,8 @@ package ufrn.imd.project.gateway;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
+import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortCriteria;
@@ -33,22 +31,26 @@ public class GatewayController {
     System.out.println("Starting to listen to requests on port " + port + "...");
 
     try {
-      protocolStrategy.listen(port, new Router() {
-        @Override
-        public void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply) {
-          quicksort(request, reply);
-        }
+      protocolStrategy.listen(
+        port,
+        new Router() {
+          @Override
+          public void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply) {
+            quicksort(request, reply);
+          }
 
-        @Override
-        public void onMergesortRequest(MergesortRequest request, Reply<SortResponse> reply) {
-          mergesort(request, reply);
-        }
+          @Override
+          public void onMergesortRequest(MergesortRequest request, Reply<SortResponse> reply) {
+            mergesort(request, reply);
+          }
 
-        @Override
-        public void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
-          parallelSort(request, reply);
-        }
-      });
+          @Override
+          public void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
+            parallelSort(request, reply);
+          }
+        },
+        new ServerThreadPool(50, 300)
+      );
     } catch (Exception e) {
       throw new RuntimeException("Error while trying to listen requests: " + e.getMessage());
     }
@@ -109,6 +111,8 @@ public class GatewayController {
       return;
     }
 
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
+    RequestWaitingList requestWaitingList = new RequestWaitingList();
     QuorumCallback quorumCallback = new QuorumCallback(
       request.criteria() == null ? ParallelSortCriteria.FIRST : request.criteria(),
       2,
@@ -116,18 +120,20 @@ public class GatewayController {
         @Override
         public void onConclusion(Map<String, SortResponse> responses) {
           reply.send(new ParallelSortResponse(responses.get("quicksort"), responses.get("mergesort")));
+
+          executorService.shutdown();
+          requestWaitingList.shutdown();;
         }
 
         @Override
         public void onError() {
           reply.error("Could not do parallel sort", false);
+
+          executorService.shutdown();
+          requestWaitingList.shutdown();;
         }
       }
     );
-
-    RequestWaitingList requestWaitingList = new RequestWaitingList();
-
-    ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     executorService.submit(() -> {
       String componentKey = "quicksort";
@@ -135,6 +141,12 @@ public class GatewayController {
       requestWaitingList.add(componentKey, quorumCallback);
 
       ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
+
+      if (instance == null) {
+        requestWaitingList.handleError(componentKey, new RuntimeException("Quicksort unavailable at the moment"));
+
+        return;
+      }
 
       try {
         SortResponse response = protocolStrategy.sendToQuicksort(
@@ -154,6 +166,12 @@ public class GatewayController {
       requestWaitingList.add(componentKey, quorumCallback);
 
       ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
+
+      if (instance == null) {
+        requestWaitingList.handleError(componentKey, new RuntimeException("Mergesort unavailable at the moment"));
+
+        return;
+      }
 
       try {
         SortResponse response = protocolStrategy.sendToMergesort(

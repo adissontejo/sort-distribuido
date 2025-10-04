@@ -1,5 +1,7 @@
 package ufrn.imd.project.gateway.protocol;
 
+import java.util.concurrent.ExecutorService;
+
 import ufrn.imd.project.communication.TcpHttpClient;
 import ufrn.imd.project.communication.TcpHttpServer;
 import ufrn.imd.project.communication.TcpHttpClient.TcpHttpResponse;
@@ -12,38 +14,41 @@ import ufrn.imd.project.dtos.SortResponse;
 
 public class GatewayTcpStrategy implements GatewayProtocolStrategy {
   @Override
-  public void listen(int port, Router router) {
+  public void listen(int port, Router router, ExecutorService executor) {
     TcpHttpServer server = new TcpHttpServer(port);
 
-    server.listen((request) -> {
-      if (request.method.equals("POST")) {
-        if (request.path.equals("/quicksort")) {
-          QuicksortRequest body = request.body(QuicksortRequest.class);
+    server.listen(
+      (request) -> {
+        if (request.method.equals("POST")) {
+          if (request.path.equals("/quicksort")) {
+            QuicksortRequest body = request.body(QuicksortRequest.class);
 
-          if (body.data() == null) {
-            request.error("data is required");
-          } else {
-            router.onQuicksortRequest(body, new TcpReply<>(request));
-          }
-        } else if (request.path.equals("/mergesort")) {
-          MergesortRequest body = request.body(MergesortRequest.class);
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onQuicksortRequest(body, new TcpReply<>(request));
+            }
+          } else if (request.path.equals("/mergesort")) {
+            MergesortRequest body = request.body(MergesortRequest.class);
 
-          if (body.data() == null) {
-            request.error("data is required");
-          } else {
-            router.onMergesortRequest(body, new TcpReply<>(request));
-          }
-        } else if (request.path.equals("/parallel-sort")) {
-          ParallelSortRequest body = request.body(ParallelSortRequest.class);
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onMergesortRequest(body, new TcpReply<>(request));
+            }
+          } else if (request.path.equals("/parallel-sort")) {
+            ParallelSortRequest body = request.body(ParallelSortRequest.class);
 
-          if (body.data() == null) {
-            request.error("data is required");
-          } else {
-            router.onParallelSortRequest(request.body(ParallelSortRequest.class), new TcpReply<>(request));
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onParallelSortRequest(request.body(ParallelSortRequest.class), new TcpReply<>(request));
+            }
           }
         }
-      }
-    });
+      },
+      executor
+    );
   }
 
   @Override

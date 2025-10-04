@@ -9,12 +9,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
-import ufrn.imd.project.config.ServerThreadPool;
 
 public class TcpHttpServer {
   private final int port;
@@ -80,15 +79,14 @@ public class TcpHttpServer {
     }
   }
 
-  public void listen(RequestListener listener) {
+  public void listen(RequestListener listener, ExecutorService executor) {
     try {
       ServerSocket serverSocket = new ServerSocket(port);
-      ServerThreadPool pool = new ServerThreadPool();
 
       while (true) {
         Socket connection = serverSocket.accept();
 
-        pool.submit(() -> processRequest(connection, listener));
+        executor.submit(() -> processRequest(connection, listener));
       }
     } catch (IOException e) {
       e.printStackTrace();

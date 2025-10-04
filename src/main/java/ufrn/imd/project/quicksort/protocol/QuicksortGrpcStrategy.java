@@ -3,11 +3,11 @@ package ufrn.imd.project.quicksort.protocol;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.grpc.QuicksortMessage;
 import ufrn.imd.project.grpc.SortResponseMessage;
@@ -15,11 +15,11 @@ import ufrn.imd.project.grpc.QuicksortServiceGrpc.QuicksortServiceImplBase;
 
 public class QuicksortGrpcStrategy implements QuicksortProtocolStrategy {
   @Override
-  public void listen(int port, RequestListener listener) {
+  public void listen(int port, RequestListener listener, ExecutorService executor) {
     try {
       Server server = ServerBuilder
         .forPort(port)
-        .executor(new ServerThreadPool())
+        .executor(executor)
         .addService(new  QuicksortServiceImpl(listener))
         .build();
 

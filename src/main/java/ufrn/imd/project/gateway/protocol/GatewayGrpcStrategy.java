@@ -1,13 +1,13 @@
 package ufrn.imd.project.gateway.protocol;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortCriteria;
@@ -29,11 +29,11 @@ import ufrn.imd.project.grpc.QuicksortServiceGrpc.QuicksortServiceBlockingStub;
 
 public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
   @Override
-  public void listen(int port, Router router) {
+  public void listen(int port, Router router, ExecutorService executor) {
     try {
       Server server = ServerBuilder
         .forPort(port)
-        .executor(new ServerThreadPool())
+        .executor(executor)
         .addService(new GatewayServiceImpl(router)).build();
 
 

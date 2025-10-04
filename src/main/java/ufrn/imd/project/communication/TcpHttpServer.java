@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import ufrn.imd.project.config.ServerThreadPool;
+
 public class TcpHttpServer {
   private final int port;
 
@@ -21,67 +23,72 @@ public class TcpHttpServer {
     this.port = port;
   }
 
+  private void processRequest(Socket connection, RequestListener listener) {
+    try {
+      BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+      String startLine = input.readLine();
+
+      if (startLine == null) {
+        return;
+      }
+
+      String[] startLineElements = startLine.split(" ");
+
+      if (startLineElements.length < 3) {
+        return;
+      }
+
+      String method = startLineElements[0];
+      String path = startLineElements[1];
+      String version = startLineElements[2];
+
+      Map<String, String> headers = new HashMap<>();
+      String nextLine;
+
+      while ((nextLine = input.readLine()) != null && !nextLine.isEmpty()) {
+        String[] headerElements = nextLine.split(": ");
+
+        if (headerElements.length < 2) {
+          continue;
+        }
+
+        headers.put(headerElements[0].toLowerCase().trim(), headerElements[1]);
+      }
+
+      int contentLength;
+
+      try {
+        contentLength = Integer.parseInt(headers.get("content-length"));
+      } catch (NumberFormatException e) {
+        contentLength = 0;
+      }
+
+      String body = null;
+
+      if (contentLength > 0) {
+        char[] buffer = new char[contentLength];
+
+        input.read(buffer, 0, contentLength);
+
+        body = String.copyValueOf(buffer);
+      }
+
+      listener.onRequest( new TcpHttpRequest(connection, method, path, version, headers, body));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void listen(RequestListener listener) {
     try {
       ServerSocket serverSocket = new ServerSocket(port);
+      ServerThreadPool pool = new ServerThreadPool();
 
       while (true) {
-        try {
-          Socket connection = serverSocket.accept();
+        Socket connection = serverSocket.accept();
 
-          BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-          String startLine = input.readLine();
-
-          if (startLine == null) {
-            continue;
-          }
-
-          String[] startLineElements = startLine.split(" ");
-
-          if (startLineElements.length < 3) {
-            continue;
-          }
-
-          String method = startLineElements[0];
-          String path = startLineElements[1];
-          String version = startLineElements[2];
-
-          Map<String, String> headers = new HashMap<>();
-          String nextLine;
-
-          while ((nextLine = input.readLine()) != null && !nextLine.isEmpty()) {
-            String[] headerElements = nextLine.split(": ");
-
-            if (headerElements.length < 2) {
-              continue;
-            }
-
-            headers.put(headerElements[0].toLowerCase().trim(), headerElements[1]);
-          }
-
-          int contentLength;
-
-          try {
-            contentLength = Integer.parseInt(headers.get("content-length"));
-          } catch (NumberFormatException e) {
-            contentLength = 0;
-          }
-
-          String body = null;
-
-          if (contentLength > 0) {
-            char[] buffer = new char[contentLength];
-
-            input.read(buffer, 0, contentLength);
-
-            body = String.copyValueOf(buffer);
-          }
-
-          listener.onRequest( new TcpHttpRequest(connection, method, path, version, headers, body));
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        pool.submit(() -> processRequest(connection, listener));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -178,7 +185,7 @@ public class TcpHttpServer {
     public void error(String message, boolean isClientError) {
       try {
         String response =
-          "HTTP/1.1 " + (isClientError ? 400 : 500) + " OK\n"
+          "HTTP/1.1 " + (isClientError ? "400 Bad Request" : "500 Internal Server Error") + "\n"
           + "Content-Length: " + message.length() + "\n"
           + "Content-Type: text/plain\n"
           + "\n"

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import ufrn.imd.project.config.ServerThreadPool;
+
 public class UdpServer {
   private final int port;
 
@@ -16,9 +18,41 @@ public class UdpServer {
     this.port = port;
   }
 
+  private void processRequest(DatagramSocket socket, DatagramPacket receivePacket, RequestListener listener) {
+    String message = new String(receivePacket.getData()).trim();
+
+    String[] lines = message.split("\r?\n");
+
+    String startLine = lines[0];
+
+    String[] startLineElements = startLine.split(" +");
+
+    if (startLineElements.length < 2) {
+      return;
+    }
+
+    String method = startLineElements[0];
+    String path = startLineElements[1];
+
+    String body = null;
+
+    if (lines.length > 1) {
+      body = "";
+
+      for (int i = 1; i < lines.length; i++) {
+        body += lines[i] + "\n";
+      }
+    }
+
+    listener.onRequest(
+      new UdpRequest(socket, receivePacket.getAddress(), receivePacket.getPort(), method, path, body)
+    );
+  }
+
   public void listen(RequestListener listener) {
     try {
       DatagramSocket socket = new DatagramSocket(port);
+      ServerThreadPool pool = new ServerThreadPool();
 
       while (true) {
         try {
@@ -28,40 +62,15 @@ public class UdpServer {
 
           socket.receive(receivePacket);
 
-          String message = new String(receivePacket.getData()).trim();
-
-          String[] lines = message.split("\r?\n");
-
-          String startLine = lines[0];
-
-          String[] startLineElements = startLine.split(" +");
-
-          if (startLineElements.length < 2) {
-            continue;
-          }
-
-          String method = startLineElements[0];
-          String path = startLineElements[1];
-
-          String body = null;
-
-          if (lines.length > 1) {
-            body = "";
-
-            for (int i = 1; i < lines.length; i++) {
-              body += lines[i] + "\n";
-            }
-          }
-
-          listener.onRequest(
-            new UdpRequest(socket, receivePacket.getAddress(), receivePacket.getPort(), method, path, body)
-          );
+          pool.submit(() -> processRequest(socket, receivePacket, listener));
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
     } catch (IOException e) {
       e.printStackTrace();
+
+      throw new RuntimeException("Could not listen to udp requests");
     }
   }
 

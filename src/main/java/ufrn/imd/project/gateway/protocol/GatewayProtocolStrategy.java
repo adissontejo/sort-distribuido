@@ -20,5 +20,6 @@ public interface GatewayProtocolStrategy {
 
   public interface Reply<T> {
     public void send(T response);
+    public void error(String message, boolean isValidationError);
   }
 }

@@ -23,19 +23,10 @@ import ufrn.imd.project.hearbeat.LoadBalancer;
 public class GatewayController {
   private final GatewayProtocolStrategy protocolStrategy;
   private final LoadBalancer loadBalancer;
-  private final ExecutorService executorService;
 
   public GatewayController(GatewayProtocolStrategy protocolStrategy, LoadBalancer loadBalancer) {
     this.protocolStrategy = protocolStrategy;
     this.loadBalancer = loadBalancer;
-    this.executorService = new ThreadPoolExecutor(
-      10,
-      20,
-      60,
-      TimeUnit.SECONDS,
-      new LinkedBlockingQueue<Runnable>(100),
-      new ThreadPoolExecutor.AbortPolicy()
-    );
   }
 
   public void listen(int port) {
@@ -45,17 +36,17 @@ public class GatewayController {
       protocolStrategy.listen(port, new Router() {
         @Override
         public void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply) {
-          executorService.submit(() -> quicksort(request, reply));
+          quicksort(request, reply);
         }
 
         @Override
         public void onMergesortRequest(MergesortRequest request, Reply<SortResponse> reply) {
-          executorService.submit(() -> mergesort(request, reply));
+          mergesort(request, reply);
         }
 
         @Override
         public void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
-          executorService.submit(() -> parallelSort(request, reply));
+          parallelSort(request, reply);
         }
       });
     } catch (Exception e) {
@@ -64,30 +55,60 @@ public class GatewayController {
   }
 
   private void quicksort(QuicksortRequest request, Reply<SortResponse> reply) {
-    ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
+    try {
+      if (request.data() == null) {
+        reply.error("'data' is required", true);
 
-    if (instance == null) {
-      throw new RuntimeException("No quicksort instance found");
+        return;
+      }
+
+      ComponentInstance instance = loadBalancer.getInstanceFor("quicksort");
+
+      if (instance == null) {
+        reply.error("Quicksort unavailable at the moment", false);
+
+        return;
+      }
+
+      SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
+
+      reply.send(response);
+    } catch (Throwable e) {
+      reply.error("Could not send request to quicksort", false);
     }
-
-    SortResponse response = protocolStrategy.sendToQuicksort(instance, request);
-
-    reply.send(response);
   }
 
   private void mergesort(MergesortRequest request, Reply<SortResponse> reply) {
-    ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
+    try {
+      if (request.data() == null) {
+        reply.error("'data' is required", true);
 
-    if (instance == null) {
-      throw new RuntimeException("No mergesort instance found");
+        return;
+      }
+
+      ComponentInstance instance = loadBalancer.getInstanceFor("mergesort");
+
+      if (instance == null) {
+        reply.error("Mergesort unavailable at the moment", false);
+
+        return;
+      }
+
+      SortResponse response = protocolStrategy.sendToMergesort(instance, request);
+
+      reply.send(response);
+    } catch (Throwable e) {
+      reply.error("Could not send request to mergesort", false);
     }
-
-    SortResponse response = protocolStrategy.sendToMergesort(instance, request);
-
-    reply.send(response);
   }
 
   private void parallelSort(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
+    if (request.data() == null) {
+      reply.error("'data' is required", true);
+
+      return;
+    }
+
     QuorumCallback quorumCallback = new QuorumCallback(
       request.criteria() == null ? ParallelSortCriteria.FIRST : request.criteria(),
       2,
@@ -99,7 +120,7 @@ public class GatewayController {
 
         @Override
         public void onError() {
-          throw new RuntimeException("Could not send parallel sort");
+          reply.error("Could not do parallel sort", false);
         }
       }
     );
@@ -109,26 +130,40 @@ public class GatewayController {
     ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     executorService.submit(() -> {
-      requestWaitingList.add("quicksort", quorumCallback);
+      String componentKey = "quicksort";
+
+      requestWaitingList.add(componentKey, quorumCallback);
+
+      ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
 
       try {
-        quicksort(new QuicksortRequest(request.data()), (response) -> {
-          requestWaitingList.handleResponse("quicksort", response);
-        });
+        SortResponse response = protocolStrategy.sendToQuicksort(
+          instance,
+          new QuicksortRequest(request.data())
+        );
+
+        requestWaitingList.handleResponse(componentKey, response);
       } catch (Throwable e) {
-        requestWaitingList.handleError("quicksort", e);
+        requestWaitingList.handleError(componentKey, e);
       }
     });
 
     executorService.submit(() -> {
-      requestWaitingList.add("mergesort", quorumCallback);
+      String componentKey = "mergesort";
+
+      requestWaitingList.add(componentKey, quorumCallback);
+
+      ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
 
       try {
-        mergesort(new MergesortRequest(request.data()), (response) -> {
-          requestWaitingList.handleResponse("mergesort", response);
-        });
+        SortResponse response = protocolStrategy.sendToMergesort(
+          instance,
+          new MergesortRequest(request.data())
+        );
+
+        requestWaitingList.handleResponse(componentKey, response);
       } catch (Throwable e) {
-        requestWaitingList.handleError("quicksort", e);
+        requestWaitingList.handleError(componentKey, e);
       }
     });
   }

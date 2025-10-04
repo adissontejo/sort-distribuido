@@ -3,6 +3,7 @@ package ufrn.imd.project.gateway.protocol;
 import ufrn.imd.project.communication.TcpHttpClient;
 import ufrn.imd.project.communication.TcpHttpServer;
 import ufrn.imd.project.communication.TcpHttpClient.TcpHttpResponse;
+import ufrn.imd.project.communication.TcpHttpServer.TcpHttpRequest;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortRequest;
@@ -15,36 +16,32 @@ public class GatewayTcpStrategy implements GatewayProtocolStrategy {
     TcpHttpServer server = new TcpHttpServer(port);
 
     server.listen((request) -> {
-      try {
-        if (request.method.equals("POST")) {
-          if (request.path.equals("/quicksort")) {
-            QuicksortRequest body = request.body(QuicksortRequest.class);
+      if (request.method.equals("POST")) {
+        if (request.path.equals("/quicksort")) {
+          QuicksortRequest body = request.body(QuicksortRequest.class);
 
-            if (body.data() == null) {
-              request.error("data is required");
-            } else {
-              router.onQuicksortRequest(body, request::reply);
-            }
-          } else if (request.path.equals("/mergesort")) {
-            MergesortRequest body = request.body(MergesortRequest.class);
+          if (body.data() == null) {
+            request.error("data is required");
+          } else {
+            router.onQuicksortRequest(body, new TcpReply<>(request));
+          }
+        } else if (request.path.equals("/mergesort")) {
+          MergesortRequest body = request.body(MergesortRequest.class);
 
-            if (body.data() == null) {
-              request.error("data is required");
-            } else {
-              router.onMergesortRequest(body, request::reply);
-            }
-          } else if (request.path.equals("/parallel-sort")) {
-            ParallelSortRequest body = request.body(ParallelSortRequest.class);
+          if (body.data() == null) {
+            request.error("data is required");
+          } else {
+            router.onMergesortRequest(body, new TcpReply<>(request));
+          }
+        } else if (request.path.equals("/parallel-sort")) {
+          ParallelSortRequest body = request.body(ParallelSortRequest.class);
 
-            if (body.data() == null) {
-              request.error("data is required");
-            } else {
-              router.onParallelSortRequest(request.body(ParallelSortRequest.class), request::reply);
-            }
+          if (body.data() == null) {
+            request.error("data is required");
+          } else {
+            router.onParallelSortRequest(request.body(ParallelSortRequest.class), new TcpReply<>(request));
           }
         }
-      } catch (Throwable e) {
-        request.error("Internal server error");
       }
     });
   }
@@ -65,5 +62,23 @@ public class GatewayTcpStrategy implements GatewayProtocolStrategy {
     TcpHttpResponse response = client.send("POST", "/sort", request);
 
     return response.body(SortResponse.class);
+  }
+
+  private class TcpReply<T> implements Reply<T> {
+    private TcpHttpRequest request;
+
+    public TcpReply(TcpHttpRequest request) {
+      this.request = request;
+    }
+
+    @Override
+    public void send(T response) {
+      request.reply(response);
+    }
+
+    @Override
+    public void error(String message, boolean isValidationError) {
+      request.error(message, isValidationError);
+    }
   }
 }

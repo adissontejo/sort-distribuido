@@ -2,6 +2,7 @@ package ufrn.imd.project.gateway.protocol;
 
 import ufrn.imd.project.communication.UdpClient;
 import ufrn.imd.project.communication.UdpClient.UdpResponse;
+import ufrn.imd.project.communication.UdpServer.UdpRequest;
 import ufrn.imd.project.communication.UdpServer;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
@@ -23,7 +24,7 @@ public class GatewayUdpStrategy implements GatewayProtocolStrategy {
             if (body.data() == null) {
               request.error("data is required");
             } else {
-              router.onQuicksortRequest(body, request::reply);
+              router.onQuicksortRequest(body, new UdpReply<>(request));
             }
           } else if (request.path.equals("/mergesort")) {
             MergesortRequest body = request.body(MergesortRequest.class);
@@ -31,7 +32,7 @@ public class GatewayUdpStrategy implements GatewayProtocolStrategy {
             if (body.data() == null) {
               request.error("data is required");
             } else {
-              router.onMergesortRequest(body, request::reply);
+              router.onMergesortRequest(body, new UdpReply<>(request));
             }
           } else if (request.path.equals("/parallel-sort")) {
             ParallelSortRequest body = request.body(ParallelSortRequest.class);
@@ -39,12 +40,12 @@ public class GatewayUdpStrategy implements GatewayProtocolStrategy {
             if (body.data() == null) {
               request.error("data is required");
             } else {
-              router.onParallelSortRequest(request.body(ParallelSortRequest.class), request::reply);
+              router.onParallelSortRequest(request.body(ParallelSortRequest.class), new UdpReply<>(request));
             }
           }
         }
       } catch (Throwable e) {
-        request.error("Internal server error");
+        request.error("Internal server error", false);
       }
     });
   }
@@ -69,5 +70,23 @@ public class GatewayUdpStrategy implements GatewayProtocolStrategy {
     UdpResponse response = client.receive();
 
     return response.body(SortResponse.class);
+  }
+
+  private class UdpReply<T> implements Reply<T> {
+    private UdpRequest request;
+
+    public UdpReply(UdpRequest request) {
+      this.request = request;
+    }
+
+    @Override
+    public void send(T response) {
+      request.reply(response);
+    }
+
+    @Override
+    public void error(String message, boolean isValidationError) {
+      request.error(message, isValidationError);
+    }
   }
 }

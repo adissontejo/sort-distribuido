@@ -7,6 +7,7 @@ import java.util.List;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.grpc.QuicksortMessage;
 import ufrn.imd.project.grpc.SortResponseMessage;
@@ -16,7 +17,11 @@ public class QuicksortGrpcStrategy implements QuicksortProtocolStrategy {
   @Override
   public void listen(int port, RequestListener listener) {
     try {
-      Server server = ServerBuilder.forPort(port).addService(new  QuicksortServiceImpl(listener)).build();
+      Server server = ServerBuilder
+        .forPort(port)
+        .executor(new ServerThreadPool())
+        .addService(new  QuicksortServiceImpl(listener))
+        .build();
 
       server.start();
       server.awaitTermination();

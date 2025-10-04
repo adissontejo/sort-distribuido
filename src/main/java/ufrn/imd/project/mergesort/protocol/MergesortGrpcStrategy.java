@@ -7,6 +7,7 @@ import java.util.List;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.grpc.MergesortMessage;
 import ufrn.imd.project.grpc.SortResponseMessage;
@@ -16,7 +17,11 @@ public class MergesortGrpcStrategy implements MergesortProtocolStrategy {
   @Override
   public void listen(int port, RequestListener listener) {
     try {
-      Server server = ServerBuilder.forPort(port).addService(new MergesortServiceImpl(listener)).build();
+      Server server = ServerBuilder
+        .forPort(port)
+        .executor(new ServerThreadPool())
+        .addService(new MergesortServiceImpl(listener))
+        .build();
 
       server.start();
       server.awaitTermination();

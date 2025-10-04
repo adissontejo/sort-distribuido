@@ -7,10 +7,12 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortCriteria;
 import ufrn.imd.project.dtos.ParallelSortRequest;
+import ufrn.imd.project.dtos.ParallelSortResponse;
 import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.dtos.SortResponse;
 import ufrn.imd.project.grpc.MergesortMessage;
@@ -29,7 +31,11 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
   @Override
   public void listen(int port, Router router) {
     try {
-      Server server = ServerBuilder.forPort(port).addService(new GatewayServiceImpl(router)).build();
+      Server server = ServerBuilder
+        .forPort(port)
+        .executor(new ServerThreadPool())
+        .addService(new GatewayServiceImpl(router)).build();
+
 
       server.start();
       server.awaitTermination();
@@ -94,10 +100,11 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
       if (request.getDataList() == null) {
         responseObserver.onError(new RuntimeException("data is required"));
       } else {
-        try {
-          router.onQuicksortRequest(
-            new QuicksortRequest(request.getDataList()),
-            response -> {
+        router.onQuicksortRequest(
+          new QuicksortRequest(request.getDataList()),
+          new Reply<SortResponse>() {
+            @Override
+            public void send(SortResponse response) {
               responseObserver.onNext(
                 SortResponseMessage.newBuilder()
                   .addAllData(response.data())
@@ -105,11 +112,16 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
                   .build()
               );
               responseObserver.onCompleted();
+            };
+
+            @Override
+            public void error(String message, boolean isValidationError) {
+              responseObserver.onError(
+                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
+              );
             }
-          );
-        } catch (Throwable e) {
-          responseObserver.onError(new RuntimeException("Internal server error"));
-        }
+          }
+        );
       }
     }
 
@@ -118,10 +130,11 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
       if (request.getDataList() == null) {
         responseObserver.onError(new RuntimeException("data is required"));
       } else {
-        try {
-          router.onMergesortRequest(
-            new MergesortRequest(request.getDataList()),
-            response -> {
+        router.onMergesortRequest(
+          new MergesortRequest(request.getDataList()),
+          new Reply<SortResponse>() {
+            @Override
+            public void send(SortResponse response) {
               responseObserver.onNext(
                 SortResponseMessage.newBuilder()
                   .addAllData(response.data())
@@ -129,11 +142,16 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
                   .build()
               );
               responseObserver.onCompleted();
+            };
+
+            @Override
+            public void error(String message, boolean isValidationError) {
+              responseObserver.onError(
+                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
+              );
             }
-          );
-        } catch (Throwable e) {
-          responseObserver.onError(new RuntimeException("Internal server error"));
-        }
+          }
+        );
       }
     }
 
@@ -146,10 +164,11 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
       if (request.getDataList() == null) {
         responseObserver.onError(new RuntimeException("data is required"));
       } else {
-        try {
-          router.onParallelSortRequest(
-            new ParallelSortRequest(request.getDataList(), criteria),
-            response -> {
+        router.onParallelSortRequest(
+          new ParallelSortRequest(request.getDataList(), criteria),
+          new Reply<ParallelSortResponse>() {
+            @Override
+            public void send(ParallelSortResponse response) {
               var builder = ParallelSortResponseMessage.newBuilder();
 
               if (response.quicksort() != null) {
@@ -170,11 +189,16 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
               responseObserver.onNext(builder.build());
               responseObserver.onCompleted();
+            };
+
+            @Override
+            public void error(String message, boolean isValidationError) {
+              responseObserver.onError(
+                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
+              );
             }
-          );
-        } catch (Throwable e) {
-          responseObserver.onError(new RuntimeException("Internal server error"));
-        }
+          }
+        );
       }
     }
   }

@@ -79,6 +79,7 @@ public class TcpHttpServer {
     }
   }
 
+  @SuppressWarnings("resource")
   public void listen(RequestListener listener, ExecutorService executor) {
     try {
       ServerSocket serverSocket = new ServerSocket(port);
@@ -95,11 +96,11 @@ public class TcpHttpServer {
     }
   }
 
-  public interface RequestListener {
+  public static interface RequestListener {
     void onRequest(TcpHttpRequest request);
   }
 
-  public class TcpHttpRequest {
+  public static class TcpHttpRequest {
     private final Socket connection;
     public final String method;
     public final String path;

@@ -59,6 +59,8 @@ public class UdpClient {
         socket = new DatagramSocket();
       }
 
+      socket.setSoTimeout(1000);
+
       socket.receive(receivePacket);
 
       socket.close();
@@ -91,8 +93,6 @@ public class UdpClient {
 
       return new UdpResponse(statusCode, body);
     } catch (IOException e) {
-      e.printStackTrace();
-
       throw new RuntimeException("Could not receive udp response");
     }
   }
@@ -103,7 +103,7 @@ public class UdpClient {
     }
   }
 
-  public class UdpResponse {
+  public static class UdpResponse {
     public final int statusCode;
     private final String body;
 

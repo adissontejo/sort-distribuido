@@ -8,11 +8,11 @@ import ufrn.imd.project.dtos.SortResponse;
 public interface QuicksortProtocolStrategy {
   void listen(int port, RequestListener listener, ExecutorService executor);
 
-  public interface RequestListener {
+  public static interface RequestListener {
     void execute(QuicksortRequest request, Reply reply);
   }
 
-  public interface Reply {
+  public static interface Reply {
     void send(SortResponse response);
   }
 }

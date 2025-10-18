@@ -8,7 +8,7 @@ public interface HeartbeatProtocolStrategy {
   public void emit(String hostname, int port, ComponentInstance self) throws IOException;
   public void listen(int port, ListenCallback callback) throws IOException, InterruptedException;
 
-  interface ListenCallback {
+  static interface ListenCallback {
     void execute(ComponentInstance instance);
   }
 }

@@ -49,7 +49,7 @@ public class GatewayController {
             parallelSort(request, reply);
           }
         },
-        new ServerThreadPool(50, 300)
+        new ServerThreadPool(50, 500)
       );
     } catch (Exception e) {
       throw new RuntimeException("Error while trying to listen requests: " + e.getMessage());
@@ -122,7 +122,6 @@ public class GatewayController {
           reply.send(new ParallelSortResponse(responses.get("quicksort"), responses.get("mergesort")));
 
           executorService.shutdown();
-          requestWaitingList.shutdown();;
         }
 
         @Override
@@ -130,7 +129,6 @@ public class GatewayController {
           reply.error("Could not do parallel sort", false);
 
           executorService.shutdown();
-          requestWaitingList.shutdown();;
         }
       }
     );

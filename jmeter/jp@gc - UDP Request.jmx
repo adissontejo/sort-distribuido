@@ -5,20 +5,17 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
-        <intProp name="ThreadGroup.num_threads">1</intProp>
-        <intProp name="ThreadGroup.ramp_time">5</intProp>
-        <longProp name="ThreadGroup.duration">1</longProp>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="false">
+        <intProp name="ThreadGroup.num_threads">100</intProp>
+        <intProp name="ThreadGroup.ramp_time">30</intProp>
+        <longProp name="ThreadGroup.duration">10</longProp>
         <longProp name="ThreadGroup.delay">0</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
-          <stringProp name="LoopController.loops">1</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
       </ThreadGroup>
@@ -28,12 +25,9 @@
           <stringProp name="port">3000</stringProp>
           <boolProp name="waitresponse">true</boolProp>
           <boolProp name="closechannel">false</boolProp>
-          <stringProp name="timeout">1000</stringProp>
+          <stringProp name="timeout">10000</stringProp>
           <stringProp name="data">POST /parallel-sort&#xd;
-{&#xd;
-    &quot;data&quot;: [-609, -471, 223, 40, -956, -269, -192, 165, 419, 328, -422, -893, -327, -328, -787, 84, -13, 164, -800, 290, -252, 124, -480, 229, -559, 408, -42, 729, 356, 936, -439, -147, 546, 976, -946, -830, -83, -165, -101, 829, -994, 650, -850, -302, 503, 625, 180, -455, 27, -317, -740, -37, 127, -277, 28, 137, 721, -188, 142, 57, 365, 415, -180, -785, 255, 931, 275, -653, -47, 21, 746, 170, -102, -72, -259, 77, 367, 153, -889, 138, 90, 310, 648, 764, -747, -543, 630, -910, 534, 272, -365, -647, 212, -981, 96, -628, 954, 682, -206, 54, -685, 286, -44, -100, -772, 646, 618, -292, -46, -933, -736, -814, 140, 730, -735, 238, 652, 362, 988, -383, 53, -960, -868, 582, 429, -65, 830, -700, 44, 452, 849, 867, 457, -777, -304, 402, 61, 482, 637, 891, -114, 723, 392, -674, 844, -989, -219, 744, -527, 458, 777, -760, 67, -281, 480, 689, 105, 843, 95, -797, 892, 623, -525, -296, -877, -692, 763, -796, -163, 590, -571, 17, -456, 246, 244, 433, 968, 313, 147, 640, -927, 476, 947, 4, 398, -23, -632, -150, -324, 514, -938, -659, 613, 605, 620, 999, 797, 108, 294, -679, 101, -428, -57, 521, -697, 172, -510, 454, -213, -809, -586, -876, -222, -621, -56, 336, -30, 553, -323, 94, -837, -579, -799, -106, -126, 39, 619, -980, 279, 549, -942, -675, 219, -984, 673, 104, -902, -901, -774, 200, -67, 143, -73, 485, -373, 821, -103, 168, -576, -614, 868, 736, 707, 92, -155, -616, -464, 329, -860, -763, -225, 352, -120, -264, 745, -795, 154, -420, -78, -751, -104, 823, 951, 932, 460, 883, 665, 1000, -242, 262, 461, -35, 912, -998, -578, 943, 184, 284, 856, 986, -421, -80, 711, 166, -85, -930, -720, 474, 157, -286, -149, 99, 850, -231, -45, 933, 47, 572, -515, -767, -129, 674, 803, 911, -230, 384, 853, -40, -649, 501, -776, 109, -136, -81, 116, 719, -406, -749, -869, 550, 303, -415, 819, 428, -203, 836, -448, -997, -845, 960, 38, -745, -347, 583, -783, -253, -430, 156, 185, 214, -402, -310, 724, 715, 447, -98, -414, 113, 578, -574, -841, -620, 48, -513, 148, 967, 767, 811, 70, -357, -199, 961, -729, 36, -646, 579, -532, 718, -791, -405, -520, -752, -130, -642, -599, 231, -558, -835, -858, 405, -855, -380, -411, -111, 805, 928, 371, 873, 270, -355, -766, 905, -581, 141, 793, -112, -834, -831, 203, -154, 846, 973, 944, 211, -900, 149, -983, -482, -521, 412, 870, 176, 417, -76, 659, 750, -418, -6, -861, -572, -322, 706, -744, 304, 950, 22, 518, -146, 155, 787, -959, 492, -587, -852, 239, 794, -557, 121, 935, -779, 469, -260, -608, -212, -396, -701, 186, -722, 299, -181, -36, 146, -937, -425, 34, 551, -246, 375, -714, 119, -400, -22, 340, 965, 385, -633, -761, -856, 997, 772, -93, 115, 305, 344, -272, 162, 443, 523, 567, 698, -544, -423, 49, 263, 372, -645, -808, -836, -53, 41, 710, -591, -208, 300, 106, 653, 841, 617, -144, 210, -492, 348, 73, -459, -611, 107, 353, -193, 545, 697, 571, -276, -535, -595, -792, 923, 924, 306, -548, -245, 131, 363, 716, 401, -502, -965, -546, 893, -534, -693, -195, 497, 494, 201, -702, -840, 242, 657, -929, 930, 222, -308, 442, -921, -313, -412, -309, 132, -62, -109, 510, -555, 530, 919, 30, 117, 633, -859, 118, -237, -922, 93, 364, 684, 690, -995, -125, -970, 996, 31, -798, -967, -640, -819, -209, 161, 902, -151, -762, 478, -506, -550, -404, 373, -755, -907, 575, -610, 814, 638, -784, -979, 525, -554, -363, -964, -915, -624, -70, -59, 786, 886, -973, -721, 14, 389, -974, 771, -312, -886, -372, 490, 431, 33, -172, -96, -84, 487, 435, -629, 81, 864, 962, 491, -108, -90, 83, 635, 731, -724, 611, 925, -805, -803, -34, 416, 842, -469, -882, 169, 355, -66, 114, 987, 681, 251, 349, -810, -138, 728, -815, 430, 887, -48, -419, -514, 489, -485, -738, -233, 499, -585, 332, 406, -987, 195, -28, -788, 188, 748, 202, -817, -811, -371, 941, -691, 781, 259, 815, 273, 537, -91, 969, 319, -378, -293, -303, -782, -680, -392, -880, 585, -683, -449, 451, -896, 642, -282, 120, -234, 459, -862, -529, 315, -366, -5, 837, -463, -790, 327, -117, -244, -596, 644, 555, -2, 560, 561, 782, -904, 269, 498, 907, 770, -634, -351, -342, -497, -157, -228, -249, -639, 129, 559, 216, -291, 339, 981, -963, -567, -305, 616, -594, -21, -217, -397, -294, -726, 636, -818, 267, -71, 881, 52, -723, 507, -950, -732, -256, 675, -941, 957, -716, 694, 562, 481, 839, 13, 838, 467, -493, 910, -822, 536, -339, 531, -867, -750, 643, 742, 187, -759, -606, -190, 920, 258, 696, -344, -707, 857, -872, -88, 513, 548, -562, -431, 486, -444, -314, -466, -189, 103, -687, -622, -214, 515, 456, -87, 654, -331, -741, 511, 875, -916, -531, 700, -386, -802, 437, -368, 382, -658, 71, -570, -773, 321, -311, 535, 343, 609, -437, -194, -261, 500, 775, 899, -176, -432, -851, -781, -769, 588, -473, 974, 756, 334, -349, -743, -914, -551, 291, -971, 754, -588, 520, 557, -672, 658, 228, -508, 6, -33, 667, 677, -278, 942, -89, 45, 453, 580, -806, 342, -468, 791, -665, 330, 280, 411, -948, -275, 436, 983, 516, -775, -321, -906, -498, 964, -113, -60, -333, -976, -210, 629, -637, 198, 423, 25, 18, 252, -968, 204, -470, 668, -926, -704, 778, -141, 676, -263, -54, -348, -690, 439, -99, 43, 929, 414, -177, -833, 627, -94, -395, -167, -467, 122, 519, 656, 908, 855, -573, 282, -41, -148, -283, 29, -483, 985, -24, 466, -725, -200, -486, 297, 563, -863, -221, -49, -300, 833, -580, 20, -944, -453, 963, -215, -462, 662, 205, -145, -377, -226, 173, -899, 709, 678, -287, -424, -945, -768, -992, 915, 462, -947, 98, -279, -871, -220, 699, -350, 424, -541, -445, -179, -885, 871, -156, 765, -911, -367],&#xd;
-    &quot;criteria&quot;: &quot;ALL&quot;&#xd;
-}</stringProp>
+${randomJson}</stringProp>
           <stringProp name="encodeclass">kg.apc.jmeter.samplers.UDPSampler</stringProp>
           <stringProp name="bind_address"></stringProp>
           <stringProp name="bind_port"></stringProp>
@@ -203,7 +197,144 @@
             <boolProp name="exclude_checkbox_state">false</boolProp>
           </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
           <hashTree/>
-          <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ThreadsStateOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Active Threads Over Time">
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1477249802">200 OK</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="randomJson">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// Quantos números você quer
+int length = 10000
+
+// Intervalo (ex: 1 a 100)
+int min = 1
+int max = 10
+
+// Gera lista aleatória
+def list = (1..length).collect { 
+    new Random().nextInt(max - min + 1) + min 
+}
+
+// Monta JSON
+def json = [data: list, criteria: &quot;ALL&quot;]
+
+// Salva numa variável do JMeter
+vars.put(&quot;randomJson&quot;, new groovy.json.JsonBuilder(json).toString())
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+        <intProp name="ThreadGroup.num_threads">150</intProp>
+        <intProp name="ThreadGroup.ramp_time">15</intProp>
+        <longProp name="ThreadGroup.duration">10</longProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <intProp name="LoopController.loops">-1</intProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <kg.apc.jmeter.samplers.UDPSampler guiclass="kg.apc.jmeter.samplers.UDPSamplerGui" testclass="kg.apc.jmeter.samplers.UDPSampler" testname="jp@gc - UDP Request">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">3000</stringProp>
+          <boolProp name="waitresponse">true</boolProp>
+          <boolProp name="closechannel">false</boolProp>
+          <stringProp name="timeout">100000</stringProp>
+          <stringProp name="data">POST /quicksort&#xd;
+${randomJson}</stringProp>
+          <stringProp name="encodeclass">kg.apc.jmeter.samplers.UDPSampler</stringProp>
+          <stringProp name="bind_address"></stringProp>
+          <stringProp name="bind_port"></stringProp>
+        </kg.apc.jmeter.samplers.UDPSampler>
+        <hashTree>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ResponseTimesOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Response Times Over Time">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -248,6 +379,51 @@
             <boolProp name="exclude_checkbox_state">false</boolProp>
           </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
           <hashTree/>
+          <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.TransactionsPerSecondGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Transactions per Second">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+            <longProp name="interval_grouping">1000</longProp>
+            <boolProp name="graph_aggregated">false</boolProp>
+            <stringProp name="include_sample_labels"></stringProp>
+            <stringProp name="exclude_sample_labels"></stringProp>
+            <stringProp name="start_offset"></stringProp>
+            <stringProp name="end_offset"></stringProp>
+            <boolProp name="include_checkbox_state">false</boolProp>
+            <boolProp name="exclude_checkbox_state">false</boolProp>
+          </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+          <hashTree/>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
             <collectionProp name="Asserion.test_strings">
               <stringProp name="1477249802">200 OK</stringProp>
@@ -257,6 +433,31 @@
             <boolProp name="Assertion.assume_success">false</boolProp>
             <intProp name="Assertion.test_type">2</intProp>
           </ResponseAssertion>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="randomJson" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// Quantos números você quer
+int length = 10000
+
+// Intervalo (ex: 1 a 100)
+int min = 1
+int max = 1000
+
+// Gera lista aleatória
+def list = (1..length).collect { 
+    new Random().nextInt(max - min + 1) + min 
+}
+
+// Monta JSON
+def json = [data: list]
+
+// Salva numa variável do JMeter
+vars.put(&quot;randomJson&quot;, new groovy.json.JsonBuilder(json).toString())
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PreProcessor>
           <hashTree/>
         </hashTree>
       </hashTree>

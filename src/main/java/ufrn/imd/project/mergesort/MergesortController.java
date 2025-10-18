@@ -33,7 +33,7 @@ public class MergesortController {
 
         reply.send(new SortResponse(data, finalTime - initialTime));
       },
-      new ServerThreadPool(25, 150)
+      new ServerThreadPool(25, 50)
     );
   }
 }

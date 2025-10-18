@@ -72,11 +72,11 @@ public class UdpServer {
     }
   }
 
-  public interface RequestListener {
+  public static interface RequestListener {
     void onRequest(UdpRequest request);
   }
 
-  public class UdpRequest {
+  public static class UdpRequest {
     private final DatagramSocket socket;
     private final InetAddress address;
     private final int port;

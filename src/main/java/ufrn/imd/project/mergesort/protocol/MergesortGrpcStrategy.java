@@ -32,7 +32,7 @@ public class MergesortGrpcStrategy implements MergesortProtocolStrategy {
     }
   }
 
-  private class MergesortServiceImpl extends MergesortServiceImplBase {
+  private static class MergesortServiceImpl extends MergesortServiceImplBase {
     private RequestListener listener;
 
     public MergesortServiceImpl(RequestListener listener) {

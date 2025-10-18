@@ -41,7 +41,7 @@ public class HeartbeatListener extends Thread {
     }
   }
 
-  private synchronized void addConnection(ComponentInstance instance) {
+  private void addConnection(ComponentInstance instance) {
     if (!lastMessageTimes.containsKey(instance)) {
       System.out.println(
         "New " + instance.componentKey() + " instance found: " + instance.hostname() + ":" + instance.port()
@@ -53,7 +53,7 @@ public class HeartbeatListener extends Thread {
     lastMessageTimes.put(instance, LocalDateTime.now());
   }
 
-  private synchronized void checkConnections() {
+  private void checkConnections() {
     LocalDateTime now = LocalDateTime.now();
 
     Iterator<Map.Entry<ComponentInstance, LocalDateTime>> iterator = lastMessageTimes.entrySet().iterator();

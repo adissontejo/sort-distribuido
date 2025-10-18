@@ -42,7 +42,7 @@ public class HeartbeatGrpcStrategy implements HeartbeatProtocolStrategy {
     server.awaitTermination();
   }
 
-  private class HeartbeatServiceImpl extends HeartbeatServiceImplBase {
+  private static class HeartbeatServiceImpl extends HeartbeatServiceImplBase {
     private final ListenCallback callback;
 
     public HeartbeatServiceImpl(ListenCallback callback) {

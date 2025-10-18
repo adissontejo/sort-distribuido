@@ -88,7 +88,7 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
     return new SortResponse(response.getDataList(), response.getNanoseconds());
   }
 
-  private class GatewayServiceImpl extends GatewayServiceImplBase {
+  private static class GatewayServiceImpl extends GatewayServiceImplBase {
     private Router router;
 
     public GatewayServiceImpl(Router router) {

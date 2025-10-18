@@ -32,7 +32,7 @@ public class QuicksortGrpcStrategy implements QuicksortProtocolStrategy {
     }
   }
 
-  private class QuicksortServiceImpl extends QuicksortServiceImplBase {
+  private static class QuicksortServiceImpl extends QuicksortServiceImplBase {
     private RequestListener listener;
 
     public QuicksortServiceImpl(RequestListener listener) {

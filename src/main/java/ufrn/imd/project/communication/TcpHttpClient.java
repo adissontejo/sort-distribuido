@@ -63,6 +63,8 @@ public class TcpHttpClient {
       output.write(request, 0, request.length());
       output.flush();
 
+      connection.setSoTimeout(1000);
+
       BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
       String startLine = input.readLine();
@@ -128,8 +130,6 @@ public class TcpHttpClient {
 
       return new TcpHttpResponse(version, statusCode, responseHeaders, body);
     } catch (IOException e) {
-      e.printStackTrace();
-
       throw new RuntimeException("Could not send tcp/http request");
     }
   }
@@ -138,7 +138,7 @@ public class TcpHttpClient {
     return send(method, path, new HashMap<>(), data);
   }
 
-  public class TcpHttpResponse {
+  public static class TcpHttpResponse {
     public final String version;
     public final int statusCode;
     private final Map<String, String> headers;

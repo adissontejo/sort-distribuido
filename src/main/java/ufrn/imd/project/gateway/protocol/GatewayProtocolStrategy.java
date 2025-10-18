@@ -14,13 +14,13 @@ public interface GatewayProtocolStrategy {
   public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
   public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request);
 
-  public interface Router {
+  public static interface Router {
     void onQuicksortRequest(QuicksortRequest request, Reply<SortResponse> reply);
     void onMergesortRequest(MergesortRequest request, Reply<SortResponse> reply);
     void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply);
   }
 
-  public interface Reply<T> {
+  public static interface Reply<T> {
     public void send(T response);
     public void error(String message, boolean isValidationError);
   }

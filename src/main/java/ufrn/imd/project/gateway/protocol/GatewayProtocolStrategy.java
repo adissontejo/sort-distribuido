@@ -1,7 +1,5 @@
 package ufrn.imd.project.gateway.protocol;
 
-import java.util.concurrent.ExecutorService;
-
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortRequest;
@@ -10,7 +8,7 @@ import ufrn.imd.project.dtos.QuicksortRequest;
 import ufrn.imd.project.dtos.SortResponse;
 
 public interface GatewayProtocolStrategy {
-  public void listen(int port, Router router, ExecutorService executor);
+  public void listen(int port, Router router);
   public SortResponse sendToQuicksort(ComponentInstance instance, QuicksortRequest request);
   public SortResponse sendToMergesort(ComponentInstance instance, MergesortRequest request);
 

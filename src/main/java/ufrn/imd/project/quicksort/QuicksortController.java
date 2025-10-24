@@ -2,7 +2,6 @@ package ufrn.imd.project.quicksort;
 
 import java.util.List;
 
-import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.SortResponse;
 import ufrn.imd.project.quicksort.protocol.QuicksortProtocolStrategy;
 
@@ -21,8 +20,6 @@ public class QuicksortController {
     this.protocolStrategy.listen(
       port,
       (request, reply ) -> {
-        System.out.println("New request received.");
-
         List<Integer> data = request.data();
 
         long initialTime = System.nanoTime();
@@ -32,8 +29,7 @@ public class QuicksortController {
         long finalTime = System.nanoTime();
 
         reply.send(new SortResponse(data, finalTime - initialTime));
-      },
-      new ServerThreadPool(5, 10)
+      }
     );
   }
 }

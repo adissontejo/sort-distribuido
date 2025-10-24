@@ -22,7 +22,7 @@ public class HeartbeatEmitter {
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    scheduler.scheduleAtFixedRate(this::emit, 0, 1, TimeUnit.SECONDS);
+    scheduler.scheduleAtFixedRate(this::emit, 1, 2, TimeUnit.SECONDS);
   }
 
   private void emit() {

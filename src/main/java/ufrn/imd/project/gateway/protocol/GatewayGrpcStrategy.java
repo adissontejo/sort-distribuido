@@ -1,7 +1,6 @@
 package ufrn.imd.project.gateway.protocol;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -29,11 +28,10 @@ import ufrn.imd.project.grpc.QuicksortServiceGrpc.QuicksortServiceBlockingStub;
 
 public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
   @Override
-  public void listen(int port, Router router, ExecutorService executor) {
+  public void listen(int port, Router router) {
     try {
       Server server = ServerBuilder
         .forPort(port)
-        .executor(executor)
         .addService(new GatewayServiceImpl(router)).build();
 
 
@@ -53,18 +51,24 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
       .usePlaintext()
       .build();
 
-    QuicksortServiceBlockingStub stub = QuicksortServiceGrpc.newBlockingStub(channel);
+    try {
+      QuicksortServiceBlockingStub stub = QuicksortServiceGrpc.newBlockingStub(channel);
 
-    QuicksortMessage message =
-      QuicksortMessage.newBuilder()
-        .addAllData(request.data())
-        .build();
+      QuicksortMessage message =
+        QuicksortMessage.newBuilder()
+          .addAllData(request.data())
+          .build();
 
-    SortResponseMessage response = stub.sort(message);
+      SortResponseMessage response = stub.sort(message);
 
-    channel.shutdown();
+      channel.shutdown();
 
-    return new SortResponse(response.getDataList(), response.getNanoseconds());
+      return new SortResponse(response.getDataList(), response.getNanoseconds());
+    } catch (Throwable e) {
+      channel.shutdown();
+
+      throw e;
+    }
   }
 
   @Override
@@ -74,18 +78,24 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
       .usePlaintext()
       .build();
 
-    MergesortServiceBlockingStub stub = MergesortServiceGrpc.newBlockingStub(channel);
+    try {
+      MergesortServiceBlockingStub stub = MergesortServiceGrpc.newBlockingStub(channel);
 
-    MergesortMessage message =
-      MergesortMessage.newBuilder()
-        .addAllData(request.data())
-        .build();
+      MergesortMessage message =
+        MergesortMessage.newBuilder()
+          .addAllData(request.data())
+          .build();
 
-    SortResponseMessage response = stub.sort(message);
+      SortResponseMessage response = stub.sort(message);
 
-    channel.shutdown();
+      channel.shutdown();
 
-    return new SortResponse(response.getDataList(), response.getNanoseconds());
+      return new SortResponse(response.getDataList(), response.getNanoseconds());
+    } catch (Throwable e) {
+      channel.shutdown();
+
+      throw e;
+    }
   }
 
   private static class GatewayServiceImpl extends GatewayServiceImplBase {
@@ -116,9 +126,8 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
             @Override
             public void error(String message, boolean isValidationError) {
-              responseObserver.onError(
-                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
-              );
+              responseObserver.onNext(null);
+              responseObserver.onCompleted();
             }
           }
         );
@@ -146,9 +155,8 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
             @Override
             public void error(String message, boolean isValidationError) {
-              responseObserver.onError(
-                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
-              );
+              responseObserver.onNext(null);
+              responseObserver.onCompleted();
             }
           }
         );
@@ -193,9 +201,8 @@ public class GatewayGrpcStrategy implements GatewayProtocolStrategy {
 
             @Override
             public void error(String message, boolean isValidationError) {
-              responseObserver.onError(
-                new RuntimeException((isValidationError ? "Bad Request: " : "Internal Server Error: ") + message)
-              );
+              responseObserver.onNext(null);
+              responseObserver.onCompleted();
             }
           }
         );

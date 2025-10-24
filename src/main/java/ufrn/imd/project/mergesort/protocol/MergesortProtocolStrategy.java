@@ -1,12 +1,10 @@
 package ufrn.imd.project.mergesort.protocol;
 
-import java.util.concurrent.ExecutorService;
-
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.SortResponse;
 
 public interface MergesortProtocolStrategy {
-  void listen(int port, RequestListener listener, ExecutorService executor);
+  void listen(int port, RequestListener listener);
 
   public static interface RequestListener {
     void execute(MergesortRequest request, Reply reply);

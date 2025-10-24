@@ -29,7 +29,7 @@ public class HeartbeatListener extends Thread {
     try {
       ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-      scheduler.scheduleAtFixedRate(this::checkConnections, 2, 1, TimeUnit.SECONDS);
+      scheduler.scheduleAtFixedRate(this::checkConnections, 4, 4, TimeUnit.SECONDS);
 
       System.out.println("Listening for heartbeat signals on port " +  PortManager.heartbeatListenerPort +  "...");
 
@@ -42,15 +42,13 @@ public class HeartbeatListener extends Thread {
   }
 
   private void addConnection(ComponentInstance instance) {
-    if (!lastMessageTimes.containsKey(instance)) {
-      System.out.println(
-        "New " + instance.componentKey() + " instance found: " + instance.hostname() + ":" + instance.port()
-      );
+    lastMessageTimes.compute(instance, (k, v) -> {
+      if (v == null) {
+        loadBalancer.addInstance(instance);
+      }
 
-      loadBalancer.addInstance(instance);
-    }
-
-    lastMessageTimes.put(instance, LocalDateTime.now());
+      return LocalDateTime.now();
+    });
   }
 
   private void checkConnections() {
@@ -66,10 +64,6 @@ public class HeartbeatListener extends Thread {
       long secondsDiff = Duration.between(lastMessageTime, now).toSeconds();
 
       if (secondsDiff > 2) {
-        System.out.println(
-          "Lost " + instance.componentKey() + " instance on " + instance.hostname() + ":" + instance.port()
-        );
-
         loadBalancer.removeInstance(instance);
 
         iterator.remove();

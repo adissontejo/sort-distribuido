@@ -1,7 +1,5 @@
 package ufrn.imd.project.hearbeat.protocol;
 
-import java.util.concurrent.Executors;
-
 import ufrn.imd.project.communication.TcpHttpClient;
 import ufrn.imd.project.communication.TcpHttpServer;
 import ufrn.imd.project.dtos.ComponentInstance;
@@ -18,13 +16,10 @@ public class HeartbeatTcpStrategy implements HeartbeatProtocolStrategy {
   public void listen(int port, ListenCallback callback) {
     TcpHttpServer server = new TcpHttpServer(port);
 
-    server.listen(
-      (request) -> {
-        callback.execute(request.body(ComponentInstance.class));
+    server.listen((request) -> {
+      callback.execute(request.body(ComponentInstance.class));
 
-        request.reply(null);
-      },
-      Executors.newSingleThreadExecutor()
-    );
+      request.reply(null);
+    });
   }
 }

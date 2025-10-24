@@ -3,7 +3,6 @@ package ufrn.imd.project.mergesort.protocol;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -15,11 +14,10 @@ import ufrn.imd.project.grpc.MergesortServiceGrpc.MergesortServiceImplBase;
 
 public class MergesortGrpcStrategy implements MergesortProtocolStrategy {
   @Override
-  public void listen(int port, RequestListener listener, ExecutorService executor) {
+  public void listen(int port, RequestListener listener) {
     try {
       Server server = ServerBuilder
         .forPort(port)
-        .executor(executor)
         .addService(new MergesortServiceImpl(listener))
         .build();
 

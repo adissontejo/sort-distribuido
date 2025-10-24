@@ -1,7 +1,6 @@
 package ufrn.imd.project.hearbeat.protocol;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
 import ufrn.imd.project.communication.UdpClient;
 import ufrn.imd.project.communication.UdpServer;
@@ -19,11 +18,8 @@ public class HeartbeatUdpStrategy implements HeartbeatProtocolStrategy {
   public void listen(int port, ListenCallback callback) throws IOException {
     UdpServer server = new UdpServer(port);
 
-    server.listen(
-      (request) -> {
-        callback.execute(request.body(ComponentInstance.class));
-      },
-      Executors.newSingleThreadExecutor()
-    );
+    server.listen( (request) -> {
+      callback.execute(request.body(ComponentInstance.class));
+    });
   }
 }

@@ -59,8 +59,6 @@ public class UdpClient {
         socket = new DatagramSocket();
       }
 
-      socket.setSoTimeout(1000);
-
       socket.receive(receivePacket);
 
       socket.close();

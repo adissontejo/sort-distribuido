@@ -1,14 +1,17 @@
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/mergesort/MergesortService.java
+/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/communication/UdpServer.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/dtos/MergesortRequest.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/hearbeat/protocol/HeartbeatUdpStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/gateway/RequestWaitingList.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/ParallelSortCriteria.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/dtos/ComponentInstance.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/QuicksortServiceGrpc.java
+/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/mergesort/protocol/MergesortUdpStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/quicksort/protocol/QuicksortGrpcStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/ParallelSortResponseMessage.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/ParallelSortMessage.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/HeartbeatServiceGrpc.java
+/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/communication/UdpClient.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/hearbeat/protocol/HeartbeatGrpcStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/dtos/QuicksortRequest.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/dtos/ParallelSortRequest.java
@@ -51,6 +54,7 @@
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/MergesortMessage.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/hearbeat/LoadBalancer.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/target/generated-sources/protobuf/ufrn/imd/project/grpc/QuicksortMessage.java
+/home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/gateway/protocol/GatewayUdpStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/dtos/ParallelSortCriteria.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/hearbeat/protocol/HeartbeatProtocolStrategy.java
 /home/adisson/Documents/Universidade/projeto-distribuida-1/src/main/java/ufrn/imd/project/hearbeat/protocol/HeartbeatTcpStrategy.java

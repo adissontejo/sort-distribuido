@@ -63,8 +63,6 @@ public class TcpHttpClient {
       output.write(request, 0, request.length());
       output.flush();
 
-      connection.setSoTimeout(1000);
-
       BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
       String startLine = input.readLine();

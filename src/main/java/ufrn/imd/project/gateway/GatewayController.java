@@ -1,10 +1,7 @@
 package ufrn.imd.project.gateway;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import ufrn.imd.project.config.ServerThreadPool;
 import ufrn.imd.project.dtos.ComponentInstance;
 import ufrn.imd.project.dtos.MergesortRequest;
 import ufrn.imd.project.dtos.ParallelSortCriteria;
@@ -48,8 +45,7 @@ public class GatewayController {
           public void onParallelSortRequest(ParallelSortRequest request, Reply<ParallelSortResponse> reply) {
             parallelSort(request, reply);
           }
-        },
-        new ServerThreadPool(50, 500)
+        }
       );
     } catch (Exception e) {
       throw new RuntimeException("Error while trying to listen requests: " + e.getMessage());
@@ -111,7 +107,6 @@ public class GatewayController {
       return;
     }
 
-    ExecutorService executorService = Executors.newFixedThreadPool(2);
     RequestWaitingList requestWaitingList = new RequestWaitingList();
     QuorumCallback quorumCallback = new QuorumCallback(
       request.criteria() == null ? ParallelSortCriteria.FIRST : request.criteria(),
@@ -120,33 +115,29 @@ public class GatewayController {
         @Override
         public void onConclusion(Map<String, SortResponse> responses) {
           reply.send(new ParallelSortResponse(responses.get("quicksort"), responses.get("mergesort")));
-
-          executorService.shutdown();
         }
 
         @Override
         public void onError() {
           reply.error("Could not do parallel sort", false);
-
-          executorService.shutdown();
         }
       }
     );
 
-    executorService.submit(() -> {
+    Thread quicksortRequest = new Thread(() -> {
       String componentKey = "quicksort";
 
-      requestWaitingList.add(componentKey, quorumCallback);
-
-      ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
-
-      if (instance == null) {
-        requestWaitingList.handleError(componentKey, new RuntimeException("Quicksort unavailable at the moment"));
-
-        return;
-      }
-
       try {
+        requestWaitingList.add(componentKey, quorumCallback);
+
+        ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
+
+        if (instance == null) {
+          requestWaitingList.handleError(componentKey, new RuntimeException("Quicksort unavailable at the moment"));
+
+          return;
+        }
+
         SortResponse response = protocolStrategy.sendToQuicksort(
           instance,
           new QuicksortRequest(request.data())
@@ -158,20 +149,20 @@ public class GatewayController {
       }
     });
 
-    executorService.submit(() -> {
+    Thread mergesortRequest = new Thread(() -> {
       String componentKey = "mergesort";
 
-      requestWaitingList.add(componentKey, quorumCallback);
-
-      ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
-
-      if (instance == null) {
-        requestWaitingList.handleError(componentKey, new RuntimeException("Mergesort unavailable at the moment"));
-
-        return;
-      }
-
       try {
+        requestWaitingList.add(componentKey, quorumCallback);
+
+        ComponentInstance instance = loadBalancer.getInstanceFor(componentKey);
+
+        if (instance == null) {
+          requestWaitingList.handleError(componentKey, new RuntimeException("Mergesort unavailable at the moment"));
+
+          return;
+        }
+
         SortResponse response = protocolStrategy.sendToMergesort(
           instance,
           new MergesortRequest(request.data())
@@ -182,5 +173,8 @@ public class GatewayController {
         requestWaitingList.handleError(componentKey, e);
       }
     });
+
+    quicksortRequest.start();
+    mergesortRequest.start();
   }
 }

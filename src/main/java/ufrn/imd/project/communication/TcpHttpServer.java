@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,14 +79,14 @@ public class TcpHttpServer {
   }
 
   @SuppressWarnings("resource")
-  public void listen(RequestListener listener, ExecutorService executor) {
+  public void listen(RequestListener listener) {
     try {
       ServerSocket serverSocket = new ServerSocket(port);
 
       while (true) {
         Socket connection = serverSocket.accept();
 
-        executor.submit(() -> processRequest(connection, listener));
+        new Thread(() -> processRequest(connection, listener)).start();
       }
     } catch (IOException e) {
       e.printStackTrace();

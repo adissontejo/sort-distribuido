@@ -1,7 +1,5 @@
 package ufrn.imd.project.gateway.protocol;
 
-import java.util.concurrent.ExecutorService;
-
 import ufrn.imd.project.communication.UdpClient;
 import ufrn.imd.project.communication.UdpClient.UdpResponse;
 import ufrn.imd.project.communication.UdpServer.UdpRequest;
@@ -14,45 +12,42 @@ import ufrn.imd.project.dtos.SortResponse;
 
 public class GatewayUdpStrategy implements GatewayProtocolStrategy {
   @Override
-  public void listen(int port, Router router, ExecutorService executor) {
+  public void listen(int port, Router router) {
     UdpServer server = new UdpServer(port);
 
-    server.listen(
-      (request) -> {
-        try {
-          if (request.method.equals("POST")) {
-            if (request.path.equals("/quicksort")) {
-              QuicksortRequest body = request.body(QuicksortRequest.class);
+    server.listen((request) -> {
+      try {
+        if (request.method.equals("POST")) {
+          if (request.path.equals("/quicksort")) {
+            QuicksortRequest body = request.body(QuicksortRequest.class);
 
-              if (body.data() == null) {
-                request.error("data is required");
-              } else {
-                router.onQuicksortRequest(body, new UdpReply<>(request));
-              }
-            } else if (request.path.equals("/mergesort")) {
-              MergesortRequest body = request.body(MergesortRequest.class);
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onQuicksortRequest(body, new UdpReply<>(request));
+            }
+          } else if (request.path.equals("/mergesort")) {
+            MergesortRequest body = request.body(MergesortRequest.class);
 
-              if (body.data() == null) {
-                request.error("data is required");
-              } else {
-                router.onMergesortRequest(body, new UdpReply<>(request));
-              }
-            } else if (request.path.equals("/parallel-sort")) {
-              ParallelSortRequest body = request.body(ParallelSortRequest.class);
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onMergesortRequest(body, new UdpReply<>(request));
+            }
+          } else if (request.path.equals("/parallel-sort")) {
+            ParallelSortRequest body = request.body(ParallelSortRequest.class);
 
-              if (body.data() == null) {
-                request.error("data is required");
-              } else {
-                router.onParallelSortRequest(request.body(ParallelSortRequest.class), new UdpReply<>(request));
-              }
+            if (body.data() == null) {
+              request.error("data is required");
+            } else {
+              router.onParallelSortRequest(request.body(ParallelSortRequest.class), new UdpReply<>(request));
             }
           }
-        } catch (Throwable e) {
-          request.error("Internal server error", false);
         }
-      },
-      executor
-    );
+      } catch (Throwable e) {
+        request.error("Internal server error", false);
+      }
+    });
   }
 
   @Override
@@ -77,7 +72,7 @@ public class GatewayUdpStrategy implements GatewayProtocolStrategy {
     return response.body(SortResponse.class);
   }
 
-  private class UdpReply<T> implements Reply<T> {
+  private static class UdpReply<T> implements Reply<T> {
     private UdpRequest request;
 
     public UdpReply(UdpRequest request) {

@@ -16,7 +16,7 @@ public class QuicksortService {
 
     int pivot = array.get(end);
 
-    int i = begin;
+    int i = begin + 1 - 1 + 1 - 1 + 1 - 1;
 
     for (int j = begin; j < end; j++) {
       if (array.get(j) <= pivot) {

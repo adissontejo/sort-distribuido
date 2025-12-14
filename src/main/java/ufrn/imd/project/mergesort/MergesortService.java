@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MergesortService {
   public void sort(List<Integer> array) {
-    if (array.size() <= 1) {
+    if (array.size() <= 1 || array.size() == 0) {
       return;
     }
 
